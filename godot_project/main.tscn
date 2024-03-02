@@ -1,0 +1,97 @@
+[gd_scene load_steps=9 format=3 uid="uid://bqbb110r5n75h"]
+
+[ext_resource type="Script" path="res://gdscript/dynamic_camera_handler.gd" id="1_0khap"]
+[ext_resource type="Script" path="res://gdscript/nodes/gyroscope_manager.gd" id="1_h33ey"]
+[ext_resource type="Shader" path="res://materials/shaders/flat_colour.gdshader" id="2_1idxd"]
+[ext_resource type="ArrayMesh" uid="uid://u3a7qwt2ec0c" path="res://geometry/gizmo.obj" id="2_i4dxu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hbbcv"]
+render_priority = 0
+shader = ExtResource("2_1idxd")
+shader_parameter/colour = Vector3(1, 0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tswum"]
+render_priority = 0
+shader = ExtResource("2_1idxd")
+shader_parameter/colour = Vector3(0, 1, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x7ggq"]
+render_priority = 0
+shader = ExtResource("2_1idxd")
+shader_parameter/colour = Vector3(0, 0, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ujntw"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Main" type="Node3D"]
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
+script = ExtResource("1_0khap")
+
+[node name="DynamicCamera" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
+
+[node name="GyroscopeManager" type="Node3D" parent="."]
+script = ExtResource("1_h33ey")
+
+[node name="XTranslate" type="Node3D" parent="GyroscopeManager"]
+
+[node name="XRotate" type="Node3D" parent="GyroscopeManager/XTranslate"]
+
+[node name="XMesh" type="MeshInstance3D" parent="GyroscopeManager/XTranslate/XRotate"]
+mesh = ExtResource("2_i4dxu")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_hbbcv")
+
+[node name="YTranslate" type="Node3D" parent="GyroscopeManager"]
+
+[node name="YRotate" type="Node3D" parent="GyroscopeManager/YTranslate"]
+
+[node name="YMesh" type="MeshInstance3D" parent="GyroscopeManager/YTranslate/YRotate"]
+mesh = ExtResource("2_i4dxu")
+skeleton = NodePath("../../../XTranslate")
+surface_material_override/0 = SubResource("ShaderMaterial_tswum")
+
+[node name="ZTranslate" type="Node3D" parent="GyroscopeManager"]
+
+[node name="ZRotate" type="Node3D" parent="GyroscopeManager/ZTranslate"]
+
+[node name="ZMesh" type="MeshInstance3D" parent="GyroscopeManager/ZTranslate/ZRotate"]
+mesh = ExtResource("2_i4dxu")
+skeleton = NodePath("../../../XTranslate")
+surface_material_override/0 = SubResource("ShaderMaterial_x7ggq")
+
+[node name="UI Layer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="UI Layer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -329.0
+offset_top = -204.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="CenterContainer" type="CenterContainer" parent="UI Layer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI Layer/Panel/CenterContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+texture = SubResource("ViewportTexture_ujntw")
+expand_mode = 5
+stretch_mode = 4
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(1280, 720)
+
+[node name="StaticCamera" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(0.707107, -0.440184, 0.553388, 0, 0.782608, 0.622514, -0.707107, -0.440184, 0.553388, 4, 5, 4)
