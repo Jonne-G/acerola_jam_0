@@ -1,33 +1,122 @@
-[gd_scene load_steps=9 format=3 uid="uid://bqbb110r5n75h"]
+[gd_scene load_steps=27 format=3 uid="uid://bqbb110r5n75h"]
 
 [ext_resource type="Script" path="res://gdscript/dynamic_camera_handler.gd" id="1_0khap"]
 [ext_resource type="Script" path="res://gdscript/nodes/gyroscope_manager.gd" id="1_h33ey"]
 [ext_resource type="Shader" path="res://materials/shaders/flat_colour.gdshader" id="2_1idxd"]
 [ext_resource type="ArrayMesh" uid="uid://u3a7qwt2ec0c" path="res://geometry/gizmo.obj" id="2_i4dxu"]
+[ext_resource type="Texture2D" uid="uid://c5722bkxfoiro" path="res://textures/keyboard_arrows_horizontal_outline.png" id="5_43kqf"]
+[ext_resource type="Shader" path="res://materials/shaders/background_sphere_shader.gdshader" id="5_c7abm"]
+[ext_resource type="Script" path="res://gdscript/load_level_button.gd" id="5_h3tar"]
+[ext_resource type="Texture2D" uid="uid://bapp4xkh33tlt" path="res://textures/keyboard_arrows_vertical_outline.png" id="6_i2xwx"]
+[ext_resource type="Texture2D" uid="uid://d2erq1w04dald" path="res://textures/keyboard_a.png" id="7_gkhce"]
+[ext_resource type="Texture2D" uid="uid://mveo8k6qa2ky" path="res://textures/keyboard_s.png" id="8_n7t47"]
+[ext_resource type="Texture2D" uid="uid://lxsdm1qmhpc0" path="res://textures/keyboard_d.png" id="9_qcj1o"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hbbcv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3y35y"]
 render_priority = 0
 shader = ExtResource("2_1idxd")
+shader_parameter/use_vertex_colour = false
 shader_parameter/colour = Vector3(1, 0, 0)
+shader_parameter/fade_bounds = Vector2(4, 5.5)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tswum"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4gdtt"]
 render_priority = 0
 shader = ExtResource("2_1idxd")
+shader_parameter/use_vertex_colour = false
 shader_parameter/colour = Vector3(0, 1, 0)
+shader_parameter/fade_bounds = Vector2(4, 5.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_x7ggq"]
 render_priority = 0
 shader = ExtResource("2_1idxd")
+shader_parameter/use_vertex_colour = false
 shader_parameter/colour = Vector3(0, 0, 1)
+shader_parameter/fade_bounds = Vector2(4, 5.5)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_ujntw"]
 viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vce3j"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(640, -100, 0)
+emission_shape_scale = Vector3(640, 10, 1)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+initial_velocity_max = 250.0
+gravity = Vector3(0, 196, 0)
+linear_accel_max = 2.0
+scale_min = 10.0
+scale_max = 30.0
+color = Color(1, 0.309804, 0.309804, 1)
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_0uijq"]
+flip_faces = true
+radius = 6.0
+height = 12.0
+
+[sub_resource type="Gradient" id="Gradient_o1tui"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.521614, 0.798271, 0.89049)
+colors = PackedColorArray(0.00330238, 0.00466351, 0.046041, 1, 0.0562158, 0.0734119, 0.279417, 1, 0.39565, 0.194808, 0.70904, 1, 0.9, 0.6348, 0.288, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8buhb"]
+gradient = SubResource("Gradient_o1tui")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_28l0y"]
+noise_type = 3
+frequency = 0.05
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_eqe57"]
+seamless = true
+seamless_blend_skirt = 0.25
+noise = SubResource("FastNoiseLite_28l0y")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mhuwb"]
+noise_type = 2
+cellular_return_type = 4
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_xe1n2"]
+width = 128
+height = 128
+depth = 128
+seamless = true
+seamless_blend_skirt = 0.5
+noise = SubResource("FastNoiseLite_mhuwb")
+
+[sub_resource type="Gradient" id="Gradient_bnqu1"]
+offsets = PackedFloat32Array(0.0436893, 0.669903)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7u8j6"]
+gradient = SubResource("Gradient_bnqu1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fj4rc"]
+render_priority = 0
+shader = ExtResource("5_c7abm")
+shader_parameter/high_freq_noise_scale = 0.2
+shader_parameter/low_freq_noise_scale = 0.1
+shader_parameter/steps = 10
+shader_parameter/high_freq_noise = SubResource("NoiseTexture3D_eqe57")
+shader_parameter/low_freq_noise = SubResource("NoiseTexture3D_xe1n2")
+shader_parameter/animation_speed = 0.025
+shader_parameter/scale_amount = 0.5
+shader_parameter/falloff_threshold = 0.1
+shader_parameter/falloff_scale = Vector2(0.075, 0.085)
+shader_parameter/falloff_pulse_speed = 0.1
+shader_parameter/value_remap = SubResource("GradientTexture1D_7u8j6")
+shader_parameter/colour_gradient = SubResource("GradientTexture1D_8buhb")
 
 [node name="Main" type="Node3D"]
 
 [node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
 script = ExtResource("1_0khap")
+camera_distance = 7.0
 
 [node name="DynamicCamera" type="Camera3D" parent="CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
@@ -42,7 +131,7 @@ script = ExtResource("1_h33ey")
 [node name="XMesh" type="MeshInstance3D" parent="GyroscopeManager/XTranslate/XRotate"]
 mesh = ExtResource("2_i4dxu")
 skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("ShaderMaterial_hbbcv")
+surface_material_override/0 = SubResource("ShaderMaterial_3y35y")
 
 [node name="YTranslate" type="Node3D" parent="GyroscopeManager"]
 
@@ -51,7 +140,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_hbbcv")
 [node name="YMesh" type="MeshInstance3D" parent="GyroscopeManager/YTranslate/YRotate"]
 mesh = ExtResource("2_i4dxu")
 skeleton = NodePath("../../../XTranslate")
-surface_material_override/0 = SubResource("ShaderMaterial_tswum")
+surface_material_override/0 = SubResource("ShaderMaterial_4gdtt")
 
 [node name="ZTranslate" type="Node3D" parent="GyroscopeManager"]
 
@@ -90,8 +179,190 @@ texture = SubResource("ViewportTexture_ujntw")
 expand_mode = 5
 stretch_mode = 4
 
+[node name="Panel2" type="Panel" parent="UI Layer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1280.0
+offset_top = -204.0
+offset_right = -951.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="CenterContainer" type="CenterContainer" parent="UI Layer/Panel2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Panel2/CenterContainer"]
+layout_mode = 2
+
+[node name="translate_hint" type="HBoxContainer" parent="UI Layer/Panel2/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/translate_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("5_43kqf")
+expand_mode = 1
+
+[node name="text" type="Label" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/translate_hint"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Translate on axis"
+
+[node name="rotate_hint" type="HBoxContainer" parent="UI Layer/Panel2/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/rotate_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("6_i2xwx")
+expand_mode = 1
+
+[node name="text" type="Label" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/rotate_hint"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Rotate around"
+
+[node name="swap_axis_hint" type="HBoxContainer" parent="UI Layer/Panel2/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="icon_x" type="TextureRect" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/swap_axis_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("7_gkhce")
+expand_mode = 1
+
+[node name="icon_y" type="TextureRect" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/swap_axis_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("8_n7t47")
+expand_mode = 1
+
+[node name="icon_z" type="TextureRect" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/swap_axis_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("9_qcj1o")
+expand_mode = 1
+
+[node name="text" type="Label" parent="UI Layer/Panel2/CenterContainer/VBoxContainer/swap_axis_hint"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Switch axis to X, Y, or Z"
+
+[node name="Label" type="Label" parent="UI Layer/Panel2/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Try to make the different shapes overlap.
+Use the static-window as reference!"
+
+[node name="CenterContainer" type="CenterContainer" parent="UI Layer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+
+[node name="level_buttons" type="HBoxContainer" parent="UI Layer/CenterContainer"]
+layout_mode = 2
+
+[node name="level_0" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "0"
+script = ExtResource("5_h3tar")
+
+[node name="level_1" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "1"
+script = ExtResource("5_h3tar")
+level_index = 1
+
+[node name="level_2" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "2"
+script = ExtResource("5_h3tar")
+level_index = 2
+
+[node name="level_3" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "3"
+script = ExtResource("5_h3tar")
+level_index = 3
+
+[node name="level_4" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "4"
+script = ExtResource("5_h3tar")
+level_index = 4
+
+[node name="level_5" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "5"
+script = ExtResource("5_h3tar")
+level_index = 5
+
+[node name="level_6" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "6"
+script = ExtResource("5_h3tar")
+level_index = 6
+
+[node name="level_7" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "7"
+script = ExtResource("5_h3tar")
+level_index = 7
+
+[node name="level_8" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "8"
+script = ExtResource("5_h3tar")
+level_index = 8
+
+[node name="level_9" type="Button" parent="UI Layer/CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "9"
+script = ExtResource("5_h3tar")
+level_index = 9
+
+[node name="victory_particles" type="GPUParticles2D" parent="UI Layer"]
+unique_name_in_owner = true
+emitting = false
+amount = 60
+process_material = SubResource("ParticleProcessMaterial_vce3j")
+lifetime = 5.0
+one_shot = true
+explosiveness = 1.0
+visibility_rect = Rect2(0, 0, 1280, 720)
+
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(1280, 720)
 
 [node name="StaticCamera" type="Camera3D" parent="SubViewport"]
 transform = Transform3D(0.707107, -0.440184, 0.553388, 0, 0.782608, 0.622514, -0.707107, -0.440184, 0.553388, 4, 5, 4)
+
+[node name="background" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 9.43988e-06, -4.97032e-06, -9.43988e-06, 1, 1.38131e-05, 4.97032e-06, -1.38131e-05, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_0uijq")
+surface_material_override/0 = SubResource("ShaderMaterial_fj4rc")

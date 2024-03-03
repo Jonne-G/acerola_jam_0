@@ -4,7 +4,7 @@ extends Node3D
 @export_category("Camera Position")
 @export_range(-180.0, 180.0) var horizontal_angle: = 45.0
 @export_range(-80.0, 80.0) var vertical_angle: = -45.0
-@export var camera_distance: = 7.0
+@export var camera_distance: = 10.0
 
 @export_category("Camera Movement")
 # Expressed as degrees-per-viewport_width
@@ -26,14 +26,12 @@ func _input(event: InputEvent):
 		is_held = true
 	elif event.is_action_released("mouse_left"):
 		is_held = false
-	
 	if event.is_action_pressed("scroll_up"):
 		camera_distance -= scroll_speed
 		camera.position.z = camera_distance
 	elif event.is_action_pressed("scroll_down"):
 		camera_distance += scroll_speed
 		camera.position.z = camera_distance
-	
 	if event.is_action_pressed("focus"):
 		var tween: = create_tween()
 		tween.tween_property(
