@@ -1,6 +1,7 @@
 extends Node
 
 var _load_index: = 0
+var _current_level: = 0
 var _base_path: = "res://levels/"
 
 var manager: GyroscopeManager # Must be registered by the manager itself
@@ -52,7 +53,6 @@ func load_level():
 	var material_z: = ShaderMaterial.new()
 	
 	material_x.shader = load("res://materials/shaders/flat_colour.gdshader")
-	
 	material_y.shader = load("res://materials/shaders/flat_colour.gdshader")
 	material_z.shader = load("res://materials/shaders/flat_colour.gdshader")
 	
@@ -78,6 +78,8 @@ func load_level():
 	manager.rotate_steps_z = level.rotate_steps.z
 	
 	manager.apply_transform()
+	
+	_current_level = _load_index
 	
 func _input(event: InputEvent):
 	if event.is_action_pressed("save", false, true):

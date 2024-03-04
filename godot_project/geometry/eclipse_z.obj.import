@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://enrlkkr13itb"
+path="res://.godot/imported/eclipse_z.obj-1d9c13f9c5377b34680b5c813ca5dea7.mesh"
+
+[deps]
+
+files=["res://.godot/imported/eclipse_z.obj-1d9c13f9c5377b34680b5c813ca5dea7.mesh"]
+
+source_file="res://geometry/eclipse_z.obj"
+dest_files=["res://.godot/imported/eclipse_z.obj-1d9c13f9c5377b34680b5c813ca5dea7.mesh", "res://.godot/imported/eclipse_z.obj-1d9c13f9c5377b34680b5c813ca5dea7.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
