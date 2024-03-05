@@ -1,0 +1,6 @@
+Asset sources:
+
+https://polyhaven.com/
+- modular_industrial_pipes_01_2k.blend
+- vintage_oil_lamp_2k.blend
+- WoodenTable_01_2k.blend

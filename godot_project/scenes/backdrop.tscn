@@ -1,0 +1,51 @@
+[gd_scene load_steps=14 format=3 uid="uid://b7nduowgohq5c"]
+
+[ext_resource type="ArrayMesh" uid="uid://7gfoybll43pl" path="res://geometry/assets/WoodenTable_01.obj" id="1_pfuaq"]
+[ext_resource type="Texture2D" uid="uid://db8hf08gfytqx" path="res://textures/assets/WoodenTable_01_diff_2k.jpg" id="2_sy3js"]
+[ext_resource type="Texture2D" uid="uid://c0u43ko650rdc" path="res://textures/assets/WoodenTable_01_nor_gl_2k.tga" id="3_5aa4x"]
+[ext_resource type="Texture2D" uid="uid://0327ds6ir5yv" path="res://textures/assets/WoodenTable_01_roughness_2k.jpg" id="4_dk0ne"]
+[ext_resource type="ArrayMesh" uid="uid://jni1hpn5w7l3" path="res://geometry/assets/orb_holder-base.obj" id="5_gp4ts"]
+[ext_resource type="Texture2D" uid="uid://cp52qd5rics2j" path="res://textures/assets/vintage_oil_lamp_diff_2k.jpg" id="6_58p7k"]
+[ext_resource type="Texture2D" uid="uid://dtgg6s81185ut" path="res://textures/assets/vintage_oil_lamp_metal_2k.jpg" id="7_gmu5c"]
+[ext_resource type="Texture2D" uid="uid://cfh7qnic4le5c" path="res://textures/assets/vintage_oil_lamp_nor_gl_2k.tga" id="8_wo07k"]
+[ext_resource type="Texture2D" uid="uid://d1yp0xqvcx0c4" path="res://textures/assets/vintage_oil_lamp_rough_2k.jpg" id="9_mmbi0"]
+[ext_resource type="Material" uid="uid://cjva6d74kgms" path="res://materials/glass_orb.material" id="10_jq0l5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nr02m"]
+albedo_texture = ExtResource("2_sy3js")
+roughness_texture = ExtResource("4_dk0ne")
+normal_enabled = true
+normal_texture = ExtResource("3_5aa4x")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_654x3"]
+albedo_texture = ExtResource("6_58p7k")
+metallic = 1.0
+metallic_texture = ExtResource("7_gmu5c")
+roughness_texture = ExtResource("9_mmbi0")
+normal_enabled = true
+normal_texture = ExtResource("8_wo07k")
+
+[sub_resource type="SphereMesh" id="SphereMesh_qvmgl"]
+radius = 0.388
+height = 0.775
+
+[node name="Backdrop" type="Node3D"]
+
+[node name="WoodenTable01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.98264, 0, -0.262956, 0, 2, 0, 0.262956, 0, 1.98264, 0.650674, 0, 0.0396475)
+mesh = ExtResource("1_pfuaq")
+surface_material_override/0 = SubResource("StandardMaterial3D_nr02m")
+
+[node name="orbholder" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09752, 0)
+
+[node name="base_orbholder" type="MeshInstance3D" parent="orbholder"]
+mesh = ExtResource("5_gp4ts")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_654x3")
+
+[node name="outer_orb" type="MeshInstance3D" parent="orbholder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.554, 0)
+mesh = SubResource("SphereMesh_qvmgl")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("10_jq0l5")
