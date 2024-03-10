@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://dwkjiy4wonaq2"]
+
+[ext_resource type="ArrayMesh" uid="uid://xa5g4cbxwops" path="res://geometry/assets/3DBread005_LQ-1K-JPG.obj" id="1_hnace"]
+[ext_resource type="Texture2D" uid="uid://cgtja7si2pp0g" path="res://textures/assets/3DBread005_LQ-1K-JPG_Color.jpg" id="2_ggdm8"]
+[ext_resource type="Texture2D" uid="uid://dcxcsice2fsg7" path="res://textures/assets/3DBread005_LQ-1K-JPG_AmbientOcclusion.jpg" id="3_nki8x"]
+[ext_resource type="Texture2D" uid="uid://bqow8bp7f17q7" path="res://textures/assets/3DBread005_LQ-1K-JPG_NormalGL.jpg" id="4_g2hmt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_180ps"]
+albedo_texture = ExtResource("2_ggdm8")
+normal_enabled = true
+normal_texture = ExtResource("4_g2hmt")
+ao_enabled = true
+ao_texture = ExtResource("3_nki8x")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_fhbbv"]
+height = 0.04
+radius = 0.066
+
+[node name="Baegle" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+mass = 0.2
+
+[node name="bread" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = ExtResource("1_hnace")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_180ps")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0201764, 0)
+shape = SubResource("CylinderShape3D_fhbbv")

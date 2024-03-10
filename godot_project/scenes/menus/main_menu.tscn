@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgehsgl8dku8l"]
+
+[sub_resource type="GDScript" id="GDScript_lhxj3"]
+resource_name = "main_menu"
+script/source = "extends Control
+
+func _ready():
+	GlobalUIManager.main_menu = self
+	GlobalUIManager.current_menu = self
+
+func play_callback():
+	GlobalUIManager.navigate_to_select()
+
+func exit_callback():
+	GlobalUIManager.exit_game()
+"
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_lhxj3")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="title" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "If the stars align"
+
+[node name="play_button" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "play"
+
+[node name="exit_button" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "exit"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/play_button" to="." method="play_callback"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/exit_button" to="." method="exit_callback"]

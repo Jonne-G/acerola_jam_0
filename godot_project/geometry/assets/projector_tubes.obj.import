@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://ci26bhslcn56h"
+path="res://.godot/imported/projector_tubes.obj-96ca6030b1d02bf6dafeb4c39e49a7fe.mesh"
+
+[deps]
+
+files=["res://.godot/imported/projector_tubes.obj-96ca6030b1d02bf6dafeb4c39e49a7fe.mesh"]
+
+source_file="res://geometry/assets/projector_tubes.obj"
+dest_files=["res://.godot/imported/projector_tubes.obj-96ca6030b1d02bf6dafeb4c39e49a7fe.mesh", "res://.godot/imported/projector_tubes.obj-96ca6030b1d02bf6dafeb4c39e49a7fe.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

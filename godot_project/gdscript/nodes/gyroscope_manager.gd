@@ -3,45 +3,62 @@ class_name GyroscopeManager
 
 enum AXIS { X, Y, Z }
 
-@export var translate_step_size: = 0.1
+@export var translate_step_size: = 0.1 * 0.0625
 @export var rotate_step_size: = 10.0
 
+var rotate_step_limit: int = int(360.0 / rotate_step_size)
+
 var current_axis: = AXIS.X
+
+var rotate_direction: = 0
+var translate_direction: = 0
 
 var current_translate: Node3D = null
 var current_rotate: Node3D = null
 
-@onready var node_translate_x: Node3D = self.find_child("XTranslate")
-@onready var node_rotate_x: Node3D = self.find_child("XRotate")
-@onready var node_mesh_x: MeshInstance3D = self.find_child("XMesh")
+@onready var press_hold_rotate: Timer = get_node("press_hold-rotate")
+@onready var press_hold_translate: Timer = get_node("press_hold-translate")
+
+@onready var node_translate_x: Node3D = get_node("XTranslate")
+@onready var node_rotate_x: Node3D = get_node("XTranslate/XRotate")
+@onready var node_mesh_x: MeshInstance3D = get_node("XTranslate/XRotate/XMesh")
 var translate_steps_x: = -1
 var rotate_steps_x: = 0
 var target_pos_x: float = 0.0
 var target_rot_x: float = 0.0
 
-@onready var node_translate_y: Node3D = self.find_child("YTranslate")
-@onready var node_rotate_y: Node3D = self.find_child("YRotate")
-@onready var node_mesh_y: MeshInstance3D = self.find_child("YMesh")
+@onready var node_translate_y: Node3D = get_node("YTranslate")
+@onready var node_rotate_y: Node3D = get_node("YTranslate/YRotate")
+@onready var node_mesh_y: MeshInstance3D = get_node("YTranslate/YRotate/YMesh")
 var translate_steps_y: = -1
 var rotate_steps_y: = 0
 var target_pos_y: float = 0.0
 var target_rot_y: float = 0.0
 
-@onready var node_translate_z: Node3D = self.find_child("ZTranslate")
-@onready var node_rotate_z: Node3D = self.find_child("ZRotate")
-@onready var node_mesh_z: MeshInstance3D = self.find_child("ZMesh")
+@onready var node_translate_z: Node3D = get_node("ZTranslate")
+@onready var node_rotate_z: Node3D = get_node("ZTranslate/ZRotate")
+@onready var node_mesh_z: MeshInstance3D = get_node("ZTranslate/ZRotate/ZMesh")
 var translate_steps_z: = -1
 var rotate_steps_z: = 0
 var target_pos_z: float = 0.0
 var target_rot_z: float = 0.0
 
 func _ready():
+	press_hold_rotate.timeout.connect(hold_rotate_callback)
+	press_hold_translate.timeout.connect(hold_translate_callback)
+	
+	var downscale = Vector3.ONE / 16.0 # ☺ Crime against humanity, I have to scale everything down, whoops
+	node_mesh_x.scale = downscale
+	node_mesh_y.scale = downscale
+	node_mesh_z.scale = downscale
+	
 	current_translate = node_translate_x
 	current_rotate    = node_rotate_x
 	
 	apply_transform()
 	
 	GlobalFunctions.manager = self
+	GlobalUIManager.gyro_manager = self
 	
 	var material_x: = ShaderMaterial.new()
 	var material_y: = ShaderMaterial.new()
@@ -59,38 +76,64 @@ func _ready():
 	node_mesh_y.set_surface_override_material(0, material_y)
 	node_mesh_z.set_surface_override_material(0, material_z)
 
-func _process(delta: float):
+func _process(delta: float): 
+	#var fix_rotation = func(x, y): return fmod(lerp(x, y, delta * 5.0) + 360.0, 360.0)
+	
 	node_translate_x.global_position.z = lerp(node_translate_x.global_position.z, target_pos_x, delta * 5.0)
 	node_translate_y.global_position.x = lerp(node_translate_y.global_position.x, target_pos_y, delta * 5.0)
 	node_translate_z.global_position.y = lerp(node_translate_z.global_position.y, target_pos_z, delta * 5.0)
 	
-	node_rotate_x.global_rotation_degrees.x = lerp(node_rotate_x.global_rotation_degrees.x, target_rot_x, delta * 5.0)
-	node_rotate_y.global_rotation_degrees.y = lerp(node_rotate_y.global_rotation_degrees.y, target_rot_y, delta * 5.0)
-	node_rotate_z.global_rotation_degrees.z = lerp(node_rotate_z.global_rotation_degrees.z, target_rot_z, delta * 5.0)
+	#node_rotate_x.global_rotation_degrees.x = fix_rotation.call(node_rotate_x.global_rotation_degrees.x, target_rot_x)
+	#node_rotate_y.global_rotation_degrees.y = fix_rotation.call(node_rotate_y.global_rotation_degrees.y, target_rot_y)
+	#node_rotate_z.global_rotation_degrees.z = fix_rotation.call(node_rotate_z.global_rotation_degrees.z, target_rot_z)
+	
+	node_rotate_x.global_rotation_degrees.x = target_rot_x
+	node_rotate_y.global_rotation_degrees.y = target_rot_y
+	node_rotate_z.global_rotation_degrees.z = target_rot_z
 
 func _input(event):
-	if event.is_action_pressed("rotate_+", false, true):
-		update_rotate(1)
+	# ^ rotate +, v rotate -, > translate +, < translate -
+	var rotate_up: bool = event.is_action_pressed("^")
+	var rotate_down: bool = event.is_action_pressed("v")
+	
+	var translate_up: bool = event.is_action_pressed(">")
+	var translate_down: bool = event.is_action_pressed("<")
+	
+	if rotate_up || rotate_down:
+		rotate_direction = int(rotate_up) - int(rotate_down)
+		if rotate_direction != 0:
+			press_hold_rotate.start()
+			update_rotate(rotate_direction)
+			check_victory()
+	
+	if translate_up || translate_down:
+		translate_direction = int(translate_up) - int(translate_down)
+		if translate_direction != 0:
+			press_hold_translate.start()
+			update_translate(translate_direction)
+			check_victory()
+	
+	if event.is_action_released("^") || event.is_action_released("v"):
+		rotate_direction = 0
+		press_hold_rotate.stop()
 		check_victory()
-	elif event.is_action_pressed("rotate_-", false, true):
-		update_rotate(-1)
+	if event.is_action_released(">") || event.is_action_released("<"):
+		translate_direction = 0
+		press_hold_translate.stop()
 		check_victory()
-	elif event.is_action_pressed("translate_+", false, true):
-		update_translate(1)
-		check_victory()
-	elif event.is_action_pressed("translate_-", false, true):
-		update_translate(-1)
-		check_victory()
-	elif event.is_action_pressed("axis_x", false, true):
-		current_axis      = AXIS.X
-		check_victory()
+	
+	
+	
+	if event.is_action_pressed("axis_x", false, true):
+		current_axis = AXIS.X
 	elif event.is_action_pressed("axis_y", false, true):
-		current_axis      = AXIS.Y
-		check_victory()
+		current_axis = AXIS.Y
 	elif event.is_action_pressed("axis_z", false, true):
-		current_axis      = AXIS.Z
-		check_victory()
-	elif event.is_action_pressed("solve", false, true):
+		current_axis = AXIS.Z
+	
+	
+	
+	if event.is_action_pressed("solve", false, true):
 		translate_steps_x = 0
 		translate_steps_y = 0
 		translate_steps_z = 0
@@ -110,6 +153,12 @@ func _input(event):
 		GlobalFunctions._load_index = GlobalFunctions._current_level
 		GlobalFunctions.load_level()
 
+func hold_rotate_callback():
+	update_rotate(rotate_direction)
+
+func hold_translate_callback():
+	update_translate(translate_direction)
+
 func check_victory():
 	if (rotate_steps_x == 0 && rotate_steps_y == 0 && rotate_steps_z == 0 &&
 		translate_steps_x == 0 && translate_steps_y == 0 && translate_steps_z == 0):
@@ -119,13 +168,13 @@ func check_victory():
 func update_rotate(amount: int):
 	match current_axis:
 		AXIS.X:
-			rotate_steps_x += amount
+			rotate_steps_x = (rotate_steps_x + amount + rotate_step_limit) % rotate_step_limit
 			target_rot_x = rotate_steps_x * rotate_step_size
 		AXIS.Y:
-			rotate_steps_y += amount
+			rotate_steps_y = (rotate_steps_y + amount + rotate_step_limit) % rotate_step_limit
 			target_rot_y = rotate_steps_y * rotate_step_size
 		AXIS.Z:
-			rotate_steps_z += amount
+			rotate_steps_z = (rotate_steps_z + amount + rotate_step_limit) % rotate_step_limit
 			target_rot_z = rotate_steps_z * rotate_step_size
 
 func update_translate(amount: int):

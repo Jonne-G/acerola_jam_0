@@ -3,7 +3,7 @@ render_mode blend_add, unshaded, world_vertex_coords;
 
 uniform bool use_vertex_colour = false;
 uniform vec3 colour = vec3(1.0, 0.0, 0.0);
-uniform vec2 fade_bounds = vec2(4.0, 5.5);
+uniform vec2 fade_bounds = vec2(0.3, 0.35);
 
 varying vec3 WSPos;
 

@@ -48,6 +48,12 @@ func load_level():
 	manager.node_mesh_y.mesh = level.mesh_y
 	manager.node_mesh_z.mesh = level.mesh_z
 	
+	var downscale = Vector3.ONE / 16.0 # Crime against humanity, I have to scale everything down, whoops
+	
+	manager.node_mesh_x.scale = downscale
+	manager.node_mesh_y.scale = downscale
+	manager.node_mesh_z.scale = downscale
+	
 	var material_x: = ShaderMaterial.new()
 	var material_y: = ShaderMaterial.new()
 	var material_z: = ShaderMaterial.new()

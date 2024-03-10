@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://db5swjdg436gw"]
+
+[ext_resource type="Shader" path="res://materials/shaders/telescope.gdshader" id="1_dn12i"]
+
+[sub_resource type="Gradient" id="Gradient_053bj"]
+offsets = PackedFloat32Array(0, 0.924574)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dchhl"]
+gradient = SubResource("Gradient_053bj")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dn12i")
+shader_parameter/total_size = 505.0
+shader_parameter/alpha_multiplier = 0.1
+shader_parameter/fade_gradient = SubResource("GradientTexture1D_dchhl")

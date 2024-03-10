@@ -1,0 +1,99 @@
+[gd_scene load_steps=10 format=3 uid="uid://s3phnenruy8p"]
+
+[ext_resource type="Material" uid="uid://c8d3q3x5wdvgi" path="res://materials/telescope.material" id="1_yptch"]
+[ext_resource type="Shader" path="res://materials/shaders/telescope.gdshader" id="2_agg0f"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_pseof"]
+radius = 5.0
+height = 20.0
+
+[sub_resource type="GDScript" id="GDScript_odbyc"]
+resource_name = "telescope_aimer"
+script/source = "extends MeshInstance3D
+
+@export var camera: Camera3D
+@export var colour: Vector3 = Vector3(1.0, 0.0, 0.0)
+
+@onready var viewport: Viewport = get_viewport()
+@onready var world: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+
+@onready var pivot: Node3D = get_node(\"pivot\")
+@onready var beam: MeshInstance3D = get_node(\"pivot/beam\")
+func _ready():
+	beam.set_instance_shader_parameter(\"colour\", colour)
+
+func _process(_delta):
+	if !camera.current:
+		return
+	
+	var raycast: = mouse_raycast()
+	
+	if raycast.is_empty():
+		return
+	
+	var target: Vector3 = raycast[\"position\"]
+	#target.x = pivot.global_position.x
+	
+	pivot.look_at(target)
+	
+	var distance: = target.distance_to(pivot.global_position)
+	
+	beam.set_instance_shader_parameter(\"size\", clamp(distance, 0.0, 500.0))
+
+func mouse_raycast(exclude=[]) -> Dictionary:
+	var mouse_position = viewport.get_mouse_position()
+	var from = camera.project_ray_origin(mouse_position)
+	var to   = from + camera.project_ray_normal(mouse_position) * 1000.0
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	query.exclude = exclude
+	
+	return world.intersect_ray(query)
+"
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_iv04a"]
+top_radius = 2.0
+bottom_radius = 1.0
+height = 8.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rlyvk"]
+top_radius = 4.0
+bottom_radius = 1.0
+height = 500.0
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="Gradient" id="Gradient_053bj"]
+offsets = PackedFloat32Array(0, 0.924574)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dchhl"]
+gradient = SubResource("Gradient_053bj")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gutek"]
+render_priority = 0
+shader = ExtResource("2_agg0f")
+shader_parameter/total_size = 505.0
+shader_parameter/alpha_multiplier = 0.5
+shader_parameter/fade_gradient = SubResource("GradientTexture1D_dchhl")
+
+[node name="telescope" type="MeshInstance3D"]
+mesh = SubResource("CapsuleMesh_pseof")
+surface_material_override/0 = ExtResource("1_yptch")
+script = SubResource("GDScript_odbyc")
+
+[node name="pivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="pivot"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -4)
+mesh = SubResource("CylinderMesh_iv04a")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_yptch")
+
+[node name="beam" type="MeshInstance3D" parent="pivot"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -253.007)
+mesh = SubResource("CylinderMesh_rlyvk")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_gutek")

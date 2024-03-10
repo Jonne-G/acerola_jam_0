@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdh524aalrwqq"]
+
+[sub_resource type="GDScript" id="GDScript_16jhu"]
+resource_name = "select_menu"
+script/source = "extends Control
+
+func _ready():
+	GlobalUIManager.select_menu = self
+	visible = false
+
+func just_play_callback():
+	GlobalUIManager.navigate_to_play()
+"
+
+[node name="SelectMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_16jhu")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="just_play" type="Button" parent="CenterContainer"]
+layout_mode = 2
+text = "just play lmao"
+
+[connection signal="pressed" from="CenterContainer/just_play" to="." method="just_play_callback"]

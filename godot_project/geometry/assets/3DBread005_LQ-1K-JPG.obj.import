@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://xa5g4cbxwops"
+path="res://.godot/imported/3DBread005_LQ-1K-JPG.obj-7a49f2a30c24d41329857c624cd83aea.mesh"
+
+[deps]
+
+files=["res://.godot/imported/3DBread005_LQ-1K-JPG.obj-7a49f2a30c24d41329857c624cd83aea.mesh"]
+
+source_file="res://geometry/assets/3DBread005_LQ-1K-JPG.obj"
+dest_files=["res://.godot/imported/3DBread005_LQ-1K-JPG.obj-7a49f2a30c24d41329857c624cd83aea.mesh", "res://.godot/imported/3DBread005_LQ-1K-JPG.obj-7a49f2a30c24d41329857c624cd83aea.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

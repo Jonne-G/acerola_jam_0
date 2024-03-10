@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://fjo63poem1et"
+path="res://.godot/imported/backdrop_terrain.obj-cbcfc0ead73095f2df45a94ac2d9df83.mesh"
+
+[deps]
+
+files=["res://.godot/imported/backdrop_terrain.obj-cbcfc0ead73095f2df45a94ac2d9df83.mesh"]
+
+source_file="res://geometry/assets/backdrop_terrain.obj"
+dest_files=["res://.godot/imported/backdrop_terrain.obj-cbcfc0ead73095f2df45a94ac2d9df83.mesh", "res://.godot/imported/backdrop_terrain.obj-cbcfc0ead73095f2df45a94ac2d9df83.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

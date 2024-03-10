@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccoyo3afjpwoq"]
+
+[ext_resource type="PackedScene" uid="uid://1tops0rv5wrs" path="res://geometry/assets/projector.glb" id="1_8xdgb"]
+
+[node name="Sketchfab_Scene" instance=ExtResource("1_8xdgb")]
+
+[node name="Sketchfab_model" parent="." index="0"]
+transform = Transform3D(0.01, 0, 0, 0, -4.37114e-10, 0.01, 0, -0.01, -4.37114e-10, 0, 0, 0)
+
+[node name="barrel_low_projector_0" parent="Sketchfab_model/projector_FBX/RootNode/barrel_low" index="0"]
+transform = Transform3D(1, 7.10543e-15, -3.01961e-15, 0, 1, 0, -3.01961e-15, 0, 1, 0, 0, 0)

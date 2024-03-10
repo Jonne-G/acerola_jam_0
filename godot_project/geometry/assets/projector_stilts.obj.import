@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://decibyk2gofbm"
+path="res://.godot/imported/projector_stilts.obj-5fd8f6f8bb5559d35cc6fc314777dd3c.mesh"
+
+[deps]
+
+files=["res://.godot/imported/projector_stilts.obj-5fd8f6f8bb5559d35cc6fc314777dd3c.mesh"]
+
+source_file="res://geometry/assets/projector_stilts.obj"
+dest_files=["res://.godot/imported/projector_stilts.obj-5fd8f6f8bb5559d35cc6fc314777dd3c.mesh", "res://.godot/imported/projector_stilts.obj-5fd8f6f8bb5559d35cc6fc314777dd3c.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

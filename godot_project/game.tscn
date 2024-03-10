@@ -1,0 +1,333 @@
+[gd_scene load_steps=31 format=3 uid="uid://bqbb110r5n75h"]
+
+[ext_resource type="Shader" path="res://materials/shaders/background_sphere_shader.gdshader" id="1_h43je"]
+[ext_resource type="Script" path="res://gdscript/dynamic_camera_handler.gd" id="2_bt86e"]
+[ext_resource type="Script" path="res://gdscript/nodes/gyroscope_manager.gd" id="3_paq3b"]
+[ext_resource type="ArrayMesh" uid="uid://u3a7qwt2ec0c" path="res://geometry/gizmo.obj" id="4_4ken6"]
+[ext_resource type="Shader" path="res://materials/shaders/flat_colour.gdshader" id="5_0u762"]
+[ext_resource type="PackedScene" uid="uid://b7nduowgohq5c" path="res://scenes/collections/interior.tscn" id="6_t7i5v"]
+[ext_resource type="CameraAttributesPractical" uid="uid://dx1th43ccphmv" path="res://misc/main_scene-camera_attributes.tres" id="7_16whd"]
+[ext_resource type="PackedScene" uid="uid://bbevwgx3lpyux" path="res://scenes/menus/pause_menu.tscn" id="8_bvuim"]
+[ext_resource type="PackedScene" uid="uid://b5gj0u0jx4rbk" path="res://scenes/menus/in-game_menu.tscn" id="9_ryrm3"]
+[ext_resource type="PackedScene" uid="uid://bdh524aalrwqq" path="res://scenes/menus/select_menu.tscn" id="10_tsfl5"]
+[ext_resource type="PackedScene" uid="uid://bgehsgl8dku8l" path="res://scenes/menus/main_menu.tscn" id="11_hj4iq"]
+[ext_resource type="ArrayMesh" uid="uid://fjo63poem1et" path="res://geometry/assets/backdrop_terrain.obj" id="12_f5uji"]
+[ext_resource type="Material" uid="uid://b88dd0x03lg4q" path="res://materials/backdrop_terrain.material" id="13_gfife"]
+[ext_resource type="PackedScene" uid="uid://s3phnenruy8p" path="res://scenes/prefabs/telescope.tscn" id="14_6ljlm"]
+
+[sub_resource type="GDScript" id="GDScript_igwrn"]
+resource_name = "prepare_the_orb"
+script/source = "extends Node3D
+
+@onready var static_camera: Camera3D = get_node(\"SubViewport/StaticCamera\")
+
+func _ready():
+	# The static-camera isn't moved when \"the_orb\" is, so do it manually
+	static_camera.transform *= self.transform
+"
+
+[sub_resource type="SphereMesh" id="SphereMesh_0uijq"]
+flip_faces = true
+radius = 6.0
+height = 12.0
+
+[sub_resource type="Gradient" id="Gradient_o1tui"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.521614, 0.798271, 0.89049)
+colors = PackedColorArray(0.00330238, 0.00466351, 0.046041, 1, 0.0562158, 0.0734119, 0.279417, 1, 0.39565, 0.194808, 0.70904, 1, 0.9, 0.6348, 0.288, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8buhb"]
+gradient = SubResource("Gradient_o1tui")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_28l0y"]
+noise_type = 3
+frequency = 0.05
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_eqe57"]
+seamless = true
+seamless_blend_skirt = 0.25
+noise = SubResource("FastNoiseLite_28l0y")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mhuwb"]
+noise_type = 2
+cellular_return_type = 4
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_xe1n2"]
+width = 128
+height = 128
+depth = 128
+seamless = true
+seamless_blend_skirt = 0.5
+noise = SubResource("FastNoiseLite_mhuwb")
+
+[sub_resource type="Gradient" id="Gradient_bnqu1"]
+offsets = PackedFloat32Array(0.0436893, 0.669903)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7u8j6"]
+gradient = SubResource("Gradient_bnqu1")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fj4rc"]
+render_priority = 0
+shader = ExtResource("1_h43je")
+shader_parameter/high_freq_noise_scale = 1.0
+shader_parameter/low_freq_noise_scale = 0.5
+shader_parameter/steps = 5
+shader_parameter/high_freq_noise = SubResource("NoiseTexture3D_eqe57")
+shader_parameter/low_freq_noise = SubResource("NoiseTexture3D_xe1n2")
+shader_parameter/animation_speed = 0.025
+shader_parameter/scale_amount = 0.5
+shader_parameter/falloff_threshold = 0.1
+shader_parameter/falloff_scale = Vector2(0.9, 1)
+shader_parameter/falloff_pulse_speed = 0.1
+shader_parameter/value_remap = SubResource("GradientTexture1D_7u8j6")
+shader_parameter/colour_gradient = SubResource("GradientTexture1D_8buhb")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n5v1t"]
+render_priority = 0
+shader = ExtResource("5_0u762")
+shader_parameter/use_vertex_colour = false
+shader_parameter/colour = Vector3(0, 0, 1)
+shader_parameter/fade_bounds = Vector2(0.3, 0.35)
+
+[sub_resource type="Environment" id="Environment_uq6wk"]
+tonemap_mode = 2
+tonemap_exposure = 0.73
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_read_sky_light = false
+sdfgi_cascades = 6
+sdfgi_min_cell_size = 0.00488281
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.015
+adjustment_enabled = true
+adjustment_contrast = 1.05
+
+[sub_resource type="GDScript" id="GDScript_ihwbo"]
+resource_name = "camera_manager"
+script/source = "extends Node3D
+
+func _ready():
+	GlobalUIManager.select_camera = get_node(\"select_camera\")
+	GlobalUIManager.start_camera = get_node(\"start_camera\")
+	GlobalUIManager.active_camera = get_node(\"moving_camera\")
+	
+	GlobalUIManager.current_camera = GlobalUIManager.start_camera
+	
+	GlobalUIManager.start_camera.current = true
+"
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vce3j"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(640, -100, 0)
+emission_shape_scale = Vector3(640, 10, 1)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 1, 0)
+initial_velocity_max = 250.0
+gravity = Vector3(0, 196, 0)
+linear_accel_max = 2.0
+scale_min = 10.0
+scale_max = 30.0
+color = Color(1, 0.309804, 0.309804, 1)
+hue_variation_min = -1.0
+hue_variation_max = 1.0
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_p0n00"]
+
+[node name="Main" type="Node3D"]
+
+[node name="the_orb" type="Node3D" parent="."]
+transform = Transform3D(0.063, 0, 0, 0, 0.063, 0, 0, 0, 0.063, 0, 0, 0)
+script = SubResource("GDScript_igwrn")
+
+[node name="SubViewport" type="SubViewport" parent="the_orb"]
+size = Vector2i(1280, 720)
+
+[node name="StaticCamera" type="Camera3D" parent="the_orb/SubViewport"]
+transform = Transform3D(0.707107, -0.440184, 0.553388, 0, 0.782608, 0.622514, -0.707107, -0.440184, 0.553388, 0.25, 0.313, 0.25)
+
+[node name="orb_background" type="MeshInstance3D" parent="the_orb"]
+transform = Transform3D(1, 9.43988e-06, -4.97032e-06, -9.43988e-06, 1, 1.38131e-05, 4.97032e-06, -1.38131e-05, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_0uijq")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_fj4rc")
+
+[node name="CameraPivot" type="Node3D" parent="the_orb"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
+script = ExtResource("2_bt86e")
+camera_distance = 7.0
+
+[node name="DynamicCamera" type="Camera3D" parent="the_orb/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
+
+[node name="GyroscopeManager" type="Node3D" parent="the_orb"]
+script = ExtResource("3_paq3b")
+
+[node name="press_hold-rotate" type="Timer" parent="the_orb/GyroscopeManager"]
+wait_time = 0.1
+
+[node name="press_hold-translate" type="Timer" parent="the_orb/GyroscopeManager"]
+wait_time = 0.1
+
+[node name="XTranslate" type="Node3D" parent="the_orb/GyroscopeManager"]
+
+[node name="XRotate" type="Node3D" parent="the_orb/GyroscopeManager/XTranslate"]
+
+[node name="XMesh" type="MeshInstance3D" parent="the_orb/GyroscopeManager/XTranslate/XRotate"]
+mesh = ExtResource("4_4ken6")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_n5v1t")
+
+[node name="YTranslate" type="Node3D" parent="the_orb/GyroscopeManager"]
+
+[node name="YRotate" type="Node3D" parent="the_orb/GyroscopeManager/YTranslate"]
+
+[node name="YMesh" type="MeshInstance3D" parent="the_orb/GyroscopeManager/YTranslate/YRotate"]
+mesh = ExtResource("4_4ken6")
+skeleton = NodePath("../../../XTranslate")
+surface_material_override/0 = SubResource("ShaderMaterial_n5v1t")
+
+[node name="ZTranslate" type="Node3D" parent="the_orb/GyroscopeManager"]
+
+[node name="ZRotate" type="Node3D" parent="the_orb/GyroscopeManager/ZTranslate"]
+
+[node name="ZMesh" type="MeshInstance3D" parent="the_orb/GyroscopeManager/ZTranslate/ZRotate"]
+mesh = ExtResource("4_4ken6")
+skeleton = NodePath("../../../XTranslate")
+surface_material_override/0 = SubResource("ShaderMaterial_n5v1t")
+
+[node name="lighting" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="lighting"]
+environment = SubResource("Environment_uq6wk")
+camera_attributes = ExtResource("7_16whd")
+
+[node name="interior" type="Node3D" parent="lighting"]
+
+[node name="spotlight" type="Node3D" parent="lighting/interior"]
+transform = Transform3D(0.274513, 0, -0.961583, 0, 1, 0, 0.961583, 0, 0.274513, -4.31761, 1.3964, 1.65786)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="lighting/interior/spotlight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+light_color = Color(1, 0.819608, 0.611765, 1)
+light_energy = 5.0
+shadow_enabled = true
+spot_range = 15.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="lighting/interior/spotlight"]
+light_color = Color(1, 0.819608, 0.611765, 1)
+light_energy = 2.0
+omni_range = 0.394826
+
+[node name="spotlight2" type="Node3D" parent="lighting/interior"]
+transform = Transform3D(0.493638, 0, 0.869667, 0, 1, 0, -0.869667, 0, 0.493638, 5.93483, 1.3964, 3.36464)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="lighting/interior/spotlight2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+light_color = Color(0.858824, 0.968627, 1, 1)
+light_energy = 5.0
+shadow_enabled = true
+spot_range = 17.1219
+
+[node name="OmniLight3D" type="OmniLight3D" parent="lighting/interior/spotlight2"]
+light_color = Color(0.858824, 0.968627, 1, 1)
+light_energy = 2.0
+omni_range = 0.394826
+
+[node name="spotlight3" type="Node3D" parent="lighting/interior"]
+transform = Transform3D(1, 0, 0, 0, -0.567485, 0.823384, 0, -0.823384, -0.567485, 0.00351965, 3.77801, -0.798033)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="lighting/interior/spotlight3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+light_color = Color(0.972549, 0.858824, 1, 1)
+light_energy = 2.0
+shadow_enabled = true
+spot_range = 12.1466
+spot_angle = 60.7821
+
+[node name="OmniLight3D" type="OmniLight3D" parent="lighting/interior/spotlight3"]
+light_color = Color(0.972549, 0.858824, 1, 1)
+light_energy = 2.0
+omni_range = 0.394826
+
+[node name="exterior" type="Node3D" parent="lighting"]
+
+[node name="directional_light" type="DirectionalLight3D" parent="lighting/exterior"]
+transform = Transform3D(0.987524, 0.00238573, -0.157453, 0.0131283, 0.995157, 0.0974175, 0.156923, -0.0982692, 0.98271, 0, 40.4335, 0)
+light_color = Color(0.670588, 0.772549, 1, 1)
+shadow_enabled = true
+
+[node name="cameras" type="Node3D" parent="."]
+script = SubResource("GDScript_ihwbo")
+
+[node name="select_camera" type="Camera3D" parent="cameras"]
+transform = Transform3D(0.986856, 0.107293, -0.120847, 0, 0.747798, 0.663926, 0.161604, -0.655199, 0.737969, 1.52359, 0.0519357, 0.938667)
+
+[node name="start_camera" type="Camera3D" parent="cameras"]
+transform = Transform3D(-4.24722e-08, -0.236414, -0.971652, -1.0334e-08, 0.971652, -0.236414, 1, 5.32907e-15, -4.37113e-08, 6.32962, 0.563452, 2.09713)
+current = true
+
+[node name="moving_camera" type="Camera3D" parent="cameras"]
+transform = Transform3D(-0.802934, 0.353001, -0.480298, -9.69494e-05, 0.805701, 0.592323, 0.596067, 0.475643, -0.646891, 5.01887, 0.390673, 2.74539)
+current = true
+
+[node name="UI Layer" type="CanvasLayer" parent="."]
+
+[node name="victory_particles" type="GPUParticles2D" parent="UI Layer"]
+unique_name_in_owner = true
+emitting = false
+amount = 60
+process_material = SubResource("ParticleProcessMaterial_vce3j")
+lifetime = 5.0
+one_shot = true
+explosiveness = 1.0
+visibility_rect = Rect2(0, 0, 1280, 720)
+
+[node name="pause_menu" parent="UI Layer" instance=ExtResource("8_bvuim")]
+visible = false
+
+[node name="in-game_menu" parent="UI Layer" node_paths=PackedStringArray("subviewport") instance=ExtResource("9_ryrm3")]
+visible = false
+subviewport = NodePath("../../the_orb/SubViewport")
+
+[node name="SelectMenu" parent="UI Layer" instance=ExtResource("10_tsfl5")]
+visible = false
+
+[node name="MainMenu" parent="UI Layer" instance=ExtResource("11_hj4iq")]
+
+[node name="background" type="Node3D" parent="."]
+
+[node name="interior" parent="background" instance=ExtResource("6_t7i5v")]
+transform = Transform3D(1, 0.000577268, 6.19933e-05, -0.000577261, 1, -0.000122721, -6.20642e-05, 0.000122685, 1, 0, -1.652, 0)
+
+[node name="exterior" type="Node3D" parent="background"]
+
+[node name="BackdropTerrain" type="MeshInstance3D" parent="background/exterior"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 497.1, -23.3411, -5.75473)
+mesh = ExtResource("12_f5uji")
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("13_gfife")
+
+[node name="telescope" parent="background/exterior" node_paths=PackedStringArray("camera") instance=ExtResource("14_6ljlm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 183.669, 19.3147, -209.359)
+camera = NodePath("../../../cameras/start_camera")
+
+[node name="telescope2" parent="background/exterior" node_paths=PackedStringArray("camera") instance=ExtResource("14_6ljlm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 410.636, -2.85085, 43.4611)
+camera = NodePath("../../../cameras/start_camera")
+colour = Vector3(0, 1, 0)
+
+[node name="telescope3" parent="background/exterior" node_paths=PackedStringArray("camera") instance=ExtResource("14_6ljlm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 296.587, 5.30408, 203.062)
+camera = NodePath("../../../cameras/start_camera")
+colour = Vector3(0, 0, 1)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="background/exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 183.669, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="background/exterior/StaticBody3D"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_p0n00")

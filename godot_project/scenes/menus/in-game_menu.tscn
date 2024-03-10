@@ -1,0 +1,155 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5gj0u0jx4rbk"]
+
+[ext_resource type="Script" path="res://gdscript/load_level_button.gd" id="1_6g3nw"]
+
+[sub_resource type="GDScript" id="GDScript_p2eli"]
+resource_name = "in-game menu"
+script/source = "extends Control
+
+@export var subviewport: SubViewport
+@onready var viewport_texture: TextureRect = get_node(\"HSplitContainer/VSplitContainer/Panel/MarginContainer/AspectRatioContainer/viewport\")
+
+func _ready():
+	GlobalUIManager.in_game_menu = self
+	visible = false
+	
+	viewport_texture.texture = subviewport.get_texture()
+"
+
+[node name="in-game_menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_p2eli")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+custom_minimum_size = Vector2(168, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 920
+
+[node name="empty" type="Control" parent="HSplitContainer"]
+layout_mode = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+split_offset = 500
+
+[node name="empty" type="Control" parent="HSplitContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="HSplitContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer/VSplitContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HSplitContainer/VSplitContainer/Panel/MarginContainer"]
+layout_mode = 2
+ratio = 1.7778
+
+[node name="viewport" type="TextureRect" parent="HSplitContainer/VSplitContainer/Panel/MarginContainer/AspectRatioContainer"]
+custom_minimum_size = Vector2(128, 72)
+layout_mode = 2
+expand_mode = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 36.0
+grow_horizontal = 2
+
+[node name="level_buttons" type="HBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="level_0" type="Button" parent="CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "0"
+script = ExtResource("1_6g3nw")
+
+[node name="level_1" type="Button" parent="CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "1"
+script = ExtResource("1_6g3nw")
+level_index = 1
+
+[node name="level_2" type="Button" parent="CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "2"
+script = ExtResource("1_6g3nw")
+level_index = 2
+
+[node name="level_3" type="Button" parent="CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "3"
+script = ExtResource("1_6g3nw")
+level_index = 3
+
+[node name="level_4" type="Button" parent="CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "4"
+script = ExtResource("1_6g3nw")
+level_index = 4
+
+[node name="level_5" type="Button" parent="CenterContainer/level_buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "5"
+script = ExtResource("1_6g3nw")
+level_index = 5
+
+[node name="level_6" type="Button" parent="CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "6"
+script = ExtResource("1_6g3nw")
+level_index = 6
+
+[node name="level_7" type="Button" parent="CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "7"
+script = ExtResource("1_6g3nw")
+level_index = 7
+
+[node name="level_8" type="Button" parent="CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "8"
+script = ExtResource("1_6g3nw")
+level_index = 8
+
+[node name="level_9" type="Button" parent="CenterContainer/level_buttons"]
+modulate = Color(0.411765, 0.411765, 0.411765, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "9"
+script = ExtResource("1_6g3nw")
+level_index = 9
