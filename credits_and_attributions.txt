@@ -1,0 +1,45 @@
+A game by Jonne Geven 'Technically Artist' for the 0th Acerola Game Jam
+
+Testing & Feedback
+Roy 'Dreamhost'
+Robbert
+Isa
+
+
+Models & Textures
+https://polyhaven.com/
+- modular_industrial_pipes_01_2k
+- vintage_oil_lamp_2k
+- WoodenTable_01_2k
+- green_metal_rust_2k
+- brick_wall_006_2k
+- wood_floor_worn_2k
+
+https://ambientcg.com
+- Metal 002
+- 3DBread005
+- 3DCucumber001
+
+https://sketchfab.com
+- "Projector" (https://skfb.ly/6V77x) by Alexander_Borisevich is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
+
+
+Audio & Music:
+"Bossa Antigua" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/
+
+UI SFX Set
+by  Kenney Vleugels (Kenney.nl)
+License (Creative Commons Zero, CC0)
+http://creativecommons.org/publicdomain/zero/1.0/
+
+
+Fonts:
+"Bagnard" by Alexandre Liziard and Étienne Ozeray; is licensed under the SIL Open Font License v1.1 (http://scripts.sil.org/OFL)
+To view the copyright and specific terms and conditions please refer to https://github.com/dconstruct/Bagnard/tree/master
+You can also find this font at: https://open-foundry.com/fonts/bagnard_sans_regular
+
+"Gap Sans" by Doug Thomas, Chris Fodge and May Kim; is licensed under the SIL Open Font License v1.1 (http://scripts.sil.org/OFL)
+To view the copyright and specific terms and conditions please refer to https://github.com/Interstices-/GapSans/tree/master
+You can also find this font at: https://open-foundry.com/fonts/gap_sans_bold

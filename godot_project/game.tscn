@@ -1,6 +1,6 @@
-[gd_scene load_steps=31 format=3 uid="uid://bqbb110r5n75h"]
+[gd_scene load_steps=36 format=3 uid="uid://bqbb110r5n75h"]
 
-[ext_resource type="Shader" path="res://materials/shaders/background_sphere_shader.gdshader" id="1_h43je"]
+[ext_resource type="Material" uid="uid://c877mq2acku71" path="res://materials/orb_cloud.material" id="1_u05gd"]
 [ext_resource type="Script" path="res://gdscript/dynamic_camera_handler.gd" id="2_bt86e"]
 [ext_resource type="Script" path="res://gdscript/nodes/gyroscope_manager.gd" id="3_paq3b"]
 [ext_resource type="ArrayMesh" uid="uid://u3a7qwt2ec0c" path="res://geometry/gizmo.obj" id="4_4ken6"]
@@ -10,10 +10,18 @@
 [ext_resource type="PackedScene" uid="uid://bbevwgx3lpyux" path="res://scenes/menus/pause_menu.tscn" id="8_bvuim"]
 [ext_resource type="PackedScene" uid="uid://b5gj0u0jx4rbk" path="res://scenes/menus/in-game_menu.tscn" id="9_ryrm3"]
 [ext_resource type="PackedScene" uid="uid://bdh524aalrwqq" path="res://scenes/menus/select_menu.tscn" id="10_tsfl5"]
+[ext_resource type="PackedScene" uid="uid://d3xuub3p1gkc0" path="res://scenes/menus/settings_menu.tscn" id="11_b3rnt"]
 [ext_resource type="PackedScene" uid="uid://bgehsgl8dku8l" path="res://scenes/menus/main_menu.tscn" id="11_hj4iq"]
 [ext_resource type="ArrayMesh" uid="uid://fjo63poem1et" path="res://geometry/assets/backdrop_terrain.obj" id="12_f5uji"]
 [ext_resource type="Material" uid="uid://b88dd0x03lg4q" path="res://materials/backdrop_terrain.material" id="13_gfife"]
 [ext_resource type="PackedScene" uid="uid://s3phnenruy8p" path="res://scenes/prefabs/telescope.tscn" id="14_6ljlm"]
+[ext_resource type="AudioStream" uid="uid://dy2clqisnq65s" path="res://sounds/translate_click.ogg" id="15_h4ctu"]
+[ext_resource type="Material" uid="uid://ee0bit0k5pea" path="res://materials/sky_material.material" id="16_iko8x"]
+[ext_resource type="AudioStream" uid="uid://dcul21s5eogkm" path="res://sounds/bossa-antigua_lead.mp3" id="16_ry22v"]
+[ext_resource type="AudioStream" uid="uid://cg64064n8s4nc" path="res://sounds/bossa-antigua_loop.mp3" id="17_rc018"]
+[ext_resource type="Texture2D" uid="uid://d2lp06t8ynvs7" path="res://textures/star.png" id="17_wv722"]
+[ext_resource type="AudioStream" uid="uid://bvi1wo423r7mh" path="res://sounds/rotate_click.ogg" id="19_fl15v"]
+[ext_resource type="AudioStream" uid="uid://deot0hhvwu828" path="res://sounds/button_click.mp3" id="20_o3g10"]
 
 [sub_resource type="GDScript" id="GDScript_igwrn"]
 resource_name = "prepare_the_orb"
@@ -30,58 +38,6 @@ func _ready():
 flip_faces = true
 radius = 6.0
 height = 12.0
-
-[sub_resource type="Gradient" id="Gradient_o1tui"]
-interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.521614, 0.798271, 0.89049)
-colors = PackedColorArray(0.00330238, 0.00466351, 0.046041, 1, 0.0562158, 0.0734119, 0.279417, 1, 0.39565, 0.194808, 0.70904, 1, 0.9, 0.6348, 0.288, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_8buhb"]
-gradient = SubResource("Gradient_o1tui")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_28l0y"]
-noise_type = 3
-frequency = 0.05
-
-[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_eqe57"]
-seamless = true
-seamless_blend_skirt = 0.25
-noise = SubResource("FastNoiseLite_28l0y")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mhuwb"]
-noise_type = 2
-cellular_return_type = 4
-
-[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_xe1n2"]
-width = 128
-height = 128
-depth = 128
-seamless = true
-seamless_blend_skirt = 0.5
-noise = SubResource("FastNoiseLite_mhuwb")
-
-[sub_resource type="Gradient" id="Gradient_bnqu1"]
-offsets = PackedFloat32Array(0.0436893, 0.669903)
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_7u8j6"]
-gradient = SubResource("Gradient_bnqu1")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_fj4rc"]
-render_priority = 0
-shader = ExtResource("1_h43je")
-shader_parameter/high_freq_noise_scale = 1.0
-shader_parameter/low_freq_noise_scale = 0.5
-shader_parameter/steps = 5
-shader_parameter/high_freq_noise = SubResource("NoiseTexture3D_eqe57")
-shader_parameter/low_freq_noise = SubResource("NoiseTexture3D_xe1n2")
-shader_parameter/animation_speed = 0.025
-shader_parameter/scale_amount = 0.5
-shader_parameter/falloff_threshold = 0.1
-shader_parameter/falloff_scale = Vector2(0.9, 1)
-shader_parameter/falloff_pulse_speed = 0.1
-shader_parameter/value_remap = SubResource("GradientTexture1D_7u8j6")
-shader_parameter/colour_gradient = SubResource("GradientTexture1D_8buhb")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_n5v1t"]
 render_priority = 0
@@ -117,6 +73,22 @@ func _ready():
 	GlobalUIManager.start_camera.current = true
 "
 
+[sub_resource type="GDScript" id="GDScript_t1npm"]
+resource_name = "ui_setup"
+script/source = "extends CanvasLayer
+
+func _ready():
+	tree_walk(self)
+	
+func tree_walk(node: Node):
+	for child in node.get_children():
+		if child is Button:
+			child.pressed.connect(GlobalAudioManager.emit_button_press)
+			print(child)
+		elif child is Control:
+			tree_walk(child)
+"
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vce3j"]
 particle_flag_disable_z = true
 emission_shape_offset = Vector3(640, -100, 0)
@@ -137,6 +109,94 @@ hue_variation_max = 1.0
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_p0n00"]
 
+[sub_resource type="QuadMesh" id="QuadMesh_ulkd4"]
+material = ExtResource("16_iko8x")
+size = Vector2(3500, 1500)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jovel"]
+emission_shape = 3
+emission_box_extents = Vector3(0, 100, 350)
+gravity = Vector3(0, 0, 0)
+scale_min = 5.0
+scale_max = 10.0
+hue_variation_max = 0.58
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pxlds"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("17_wv722")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_tm6k2"]
+material = SubResource("StandardMaterial3D_pxlds")
+size = Vector2(1, 2)
+
+[sub_resource type="GDScript" id="GDScript_qoxcc"]
+resource_name = "audio_manager"
+script/source = "extends Node3D
+
+@onready var translate_click: AudioStreamPlayer = get_node(\"translate_click\")
+@onready var translate_volume_offset: = translate_click.volume_db
+@onready var rotate_click: AudioStreamPlayer = get_node(\"rotate_click\")
+@onready var rotate_volume_offset: = rotate_click.volume_db
+@onready var button_press: AudioStreamPlayer = get_node(\"button_press\")
+@onready var button_volume_offset: = button_press.volume_db
+
+@onready var music_lead: AudioStreamPlayer = get_node(\"music_lead\")
+@onready var music_loop: AudioStreamPlayer = get_node(\"music_loop\")
+
+func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	manage_fx_levels()
+	manage_music_levels()
+	
+	GlobalAudioManager.music_level_update.connect(manage_music_levels)
+	GlobalAudioManager.fx_level_update.connect(manage_fx_levels)
+	
+	GlobalAudioManager.button_pressed.connect(button_click)
+	
+	music_lead.finished.connect(music_loop.play)
+	music_lead.volume_db = -40.0
+	
+	var tween: Tween = create_tween()
+	
+	tween.tween_property(music_lead, \"volume_db\", GlobalAudioManager.music_level, 5.0)
+	
+	music_lead.play()
+	tween.play()
+
+func manage_fx_levels():
+	translate_click.volume_db = GlobalAudioManager.fx_level
+
+func manage_music_levels():
+	music_lead.volume_db = GlobalAudioManager.music_level
+	music_loop.volume_db = GlobalAudioManager.music_level
+
+func _input(event):
+	if !GlobalUIManager.in_game_menu.visible || GlobalUIManager.game_is_paused:
+		return
+	elif event.is_action_pressed(\"<\") || event.is_action_pressed(\">\"):
+		translate_click.pitch_scale = randf_range(0.975, 1.025) + float(event.is_action_pressed(\">\")) * 0.02
+		translate_click.volume_db   = translate_volume_offset + GlobalAudioManager.fx_level + randf_range(-5, 0)
+		translate_click.play()
+	elif event.is_action_pressed(\"^\") || event.is_action_pressed(\"v\"):
+		rotate_click.pitch_scale = randf_range(0.975, 1.025) + float(event.is_action_pressed(\"v\")) * 0.02
+		rotate_click.volume_db   = rotate_volume_offset + GlobalAudioManager.fx_level + randf_range(-5, 0)
+		rotate_click.play()
+
+func button_click():
+	button_press.pitch_scale = randf_range(0.95, 1.05)
+	button_press.volume_db = button_volume_offset + GlobalAudioManager.fx_level + randf_range(-5, 0)
+	button_press.play()
+
+func random_volume() -> float:
+	return randf_range(-5, 0)
+"
+
 [node name="Main" type="Node3D"]
 
 [node name="the_orb" type="Node3D" parent="."]
@@ -153,7 +213,7 @@ transform = Transform3D(0.707107, -0.440184, 0.553388, 0, 0.782608, 0.622514, -0
 transform = Transform3D(1, 9.43988e-06, -4.97032e-06, -9.43988e-06, 1, 1.38131e-05, 4.97032e-06, -1.38131e-05, 1, 0, 0, 0)
 mesh = SubResource("SphereMesh_0uijq")
 skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("ShaderMaterial_fj4rc")
+surface_material_override/0 = ExtResource("1_u05gd")
 
 [node name="CameraPivot" type="Node3D" parent="the_orb"]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0)
@@ -256,8 +316,9 @@ omni_range = 0.394826
 [node name="exterior" type="Node3D" parent="lighting"]
 
 [node name="directional_light" type="DirectionalLight3D" parent="lighting/exterior"]
-transform = Transform3D(0.987524, 0.00238573, -0.157453, 0.0131283, 0.995157, 0.0974175, 0.156923, -0.0982692, 0.98271, 0, 40.4335, 0)
-light_color = Color(0.670588, 0.772549, 1, 1)
+transform = Transform3D(0.987524, 0.00238574, -0.157453, 0.0131283, 0.995157, 0.0974175, 0.156923, -0.0982692, 0.98271, 0, 40.4335, 0)
+light_color = Color(0.576471, 0.705882, 1, 1)
+light_energy = 0.5
 shadow_enabled = true
 
 [node name="cameras" type="Node3D" parent="."]
@@ -275,6 +336,7 @@ transform = Transform3D(-0.802934, 0.353001, -0.480298, -9.69494e-05, 0.805701, 
 current = true
 
 [node name="UI Layer" type="CanvasLayer" parent="."]
+script = SubResource("GDScript_t1npm")
 
 [node name="victory_particles" type="GPUParticles2D" parent="UI Layer"]
 unique_name_in_owner = true
@@ -286,9 +348,6 @@ one_shot = true
 explosiveness = 1.0
 visibility_rect = Rect2(0, 0, 1280, 720)
 
-[node name="pause_menu" parent="UI Layer" instance=ExtResource("8_bvuim")]
-visible = false
-
 [node name="in-game_menu" parent="UI Layer" node_paths=PackedStringArray("subviewport") instance=ExtResource("9_ryrm3")]
 visible = false
 subviewport = NodePath("../../the_orb/SubViewport")
@@ -297,6 +356,13 @@ subviewport = NodePath("../../the_orb/SubViewport")
 visible = false
 
 [node name="MainMenu" parent="UI Layer" instance=ExtResource("11_hj4iq")]
+
+[node name="PauseMenu" parent="UI Layer" instance=ExtResource("8_bvuim")]
+visible = false
+
+[node name="SettingsMenu" parent="UI Layer" instance=ExtResource("11_b3rnt")]
+process_mode = 3
+visible = false
 
 [node name="background" type="Node3D" parent="."]
 
@@ -331,3 +397,39 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 183.669, 0, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="background/exterior/StaticBody3D"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("WorldBoundaryShape3D_p0n00")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="background/exterior"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1000.2, 700.663, 0)
+mesh = SubResource("QuadMesh_ulkd4")
+
+[node name="stars" type="GPUParticles3D" parent="background/exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 262.968, 177.488, 0)
+lifetime = 3.0
+visibility_aabb = AABB(-4, -113.712, -385.941, 8, 227.424, 771.881)
+process_material = SubResource("ParticleProcessMaterial_jovel")
+draw_pass_1 = SubResource("QuadMesh_tm6k2")
+
+[node name="audio" type="Node3D" parent="."]
+process_mode = 3
+script = SubResource("GDScript_qoxcc")
+
+[node name="translate_click" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("15_h4ctu")
+volume_db = -4.0
+max_polyphony = 2
+
+[node name="rotate_click" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("19_fl15v")
+volume_db = -5.0
+max_polyphony = 2
+
+[node name="button_press" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("20_o3g10")
+volume_db = -2.0
+max_polyphony = 2
+
+[node name="music_lead" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("16_ry22v")
+
+[node name="music_loop" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("17_rc018")

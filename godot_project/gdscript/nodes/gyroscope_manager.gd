@@ -24,24 +24,24 @@ var current_rotate: Node3D = null
 @onready var node_mesh_x: MeshInstance3D = get_node("XTranslate/XRotate/XMesh")
 var translate_steps_x: = -1
 var rotate_steps_x: = 0
+var current_rotate_steps_x: = 0.0
 var target_pos_x: float = 0.0
-var target_rot_x: float = 0.0
 
 @onready var node_translate_y: Node3D = get_node("YTranslate")
 @onready var node_rotate_y: Node3D = get_node("YTranslate/YRotate")
 @onready var node_mesh_y: MeshInstance3D = get_node("YTranslate/YRotate/YMesh")
 var translate_steps_y: = -1
 var rotate_steps_y: = 0
+var current_rotate_steps_y: = 0.0
 var target_pos_y: float = 0.0
-var target_rot_y: float = 0.0
 
 @onready var node_translate_z: Node3D = get_node("ZTranslate")
 @onready var node_rotate_z: Node3D = get_node("ZTranslate/ZRotate")
 @onready var node_mesh_z: MeshInstance3D = get_node("ZTranslate/ZRotate/ZMesh")
 var translate_steps_z: = -1
 var rotate_steps_z: = 0
+var current_rotate_steps_z: = 0.0
 var target_pos_z: float = 0.0
-var target_rot_z: float = 0.0
 
 func _ready():
 	press_hold_rotate.timeout.connect(hold_rotate_callback)
@@ -76,22 +76,23 @@ func _ready():
 	node_mesh_y.set_surface_override_material(0, material_y)
 	node_mesh_z.set_surface_override_material(0, material_z)
 
-func _process(delta: float): 
-	#var fix_rotation = func(x, y): return fmod(lerp(x, y, delta * 5.0) + 360.0, 360.0)
-	
+func _process(delta: float):
 	node_translate_x.global_position.z = lerp(node_translate_x.global_position.z, target_pos_x, delta * 5.0)
 	node_translate_y.global_position.x = lerp(node_translate_y.global_position.x, target_pos_y, delta * 5.0)
 	node_translate_z.global_position.y = lerp(node_translate_z.global_position.y, target_pos_z, delta * 5.0)
 	
-	#node_rotate_x.global_rotation_degrees.x = fix_rotation.call(node_rotate_x.global_rotation_degrees.x, target_rot_x)
-	#node_rotate_y.global_rotation_degrees.y = fix_rotation.call(node_rotate_y.global_rotation_degrees.y, target_rot_y)
-	#node_rotate_z.global_rotation_degrees.z = fix_rotation.call(node_rotate_z.global_rotation_degrees.z, target_rot_z)
+	current_rotate_steps_x = lerp(current_rotate_steps_x, float(rotate_steps_x), delta * 5.0);
+	current_rotate_steps_y = lerp(current_rotate_steps_y, float(rotate_steps_y), delta * 5.0);
+	current_rotate_steps_z = lerp(current_rotate_steps_z, float(rotate_steps_z), delta * 5.0);
 	
-	node_rotate_x.global_rotation_degrees.x = target_rot_x
-	node_rotate_y.global_rotation_degrees.y = target_rot_y
-	node_rotate_z.global_rotation_degrees.z = target_rot_z
+	node_rotate_x.global_rotation_degrees.x = current_rotate_steps_x * rotate_step_size
+	node_rotate_y.global_rotation_degrees.y = current_rotate_steps_y * rotate_step_size
+	node_rotate_z.global_rotation_degrees.z = current_rotate_steps_z * rotate_step_size
 
 func _input(event):
+	if !GlobalUIManager.in_game_menu.visible || GlobalUIManager.game_is_paused:
+		return
+	
 	# ^ rotate +, v rotate -, > translate +, < translate -
 	var rotate_up: bool = event.is_action_pressed("^")
 	var rotate_down: bool = event.is_action_pressed("v")
@@ -145,10 +146,6 @@ func _input(event):
 		target_pos_x = 0.0
 		target_pos_y = 0.0
 		target_pos_z = 0.0
-		
-		target_rot_x = 0.0
-		target_rot_y = 0.0
-		target_rot_z = 0.0
 	elif event.is_action_pressed("reset", false, true):
 		GlobalFunctions._load_index = GlobalFunctions._current_level
 		GlobalFunctions.load_level()
@@ -160,7 +157,11 @@ func hold_translate_callback():
 	update_translate(translate_direction)
 
 func check_victory():
-	if (rotate_steps_x == 0 && rotate_steps_y == 0 && rotate_steps_z == 0 &&
+	var fixed_rotate_x: int = posmod(rotate_steps_x, rotate_step_limit)
+	var fixed_rotate_y: int = posmod(rotate_steps_y, rotate_step_limit)
+	var fixed_rotate_z: int = posmod(rotate_steps_z, rotate_step_limit)
+	
+	if (fixed_rotate_x == 0 && fixed_rotate_y == 0 && fixed_rotate_z == 0 &&
 		translate_steps_x == 0 && translate_steps_y == 0 && translate_steps_z == 0):
 		var particles: GPUParticles2D = %victory_particles
 		particles.restart()
@@ -168,14 +169,14 @@ func check_victory():
 func update_rotate(amount: int):
 	match current_axis:
 		AXIS.X:
-			rotate_steps_x = (rotate_steps_x + amount + rotate_step_limit) % rotate_step_limit
-			target_rot_x = rotate_steps_x * rotate_step_size
+			rotate_steps_x = (rotate_steps_x + amount)
+			#target_rot_x = rotate_steps_x * rotate_step_size
 		AXIS.Y:
-			rotate_steps_y = (rotate_steps_y + amount + rotate_step_limit) % rotate_step_limit
-			target_rot_y = rotate_steps_y * rotate_step_size
+			rotate_steps_y = (rotate_steps_y + amount)
+			#target_rot_y = rotate_steps_y * rotate_step_size
 		AXIS.Z:
-			rotate_steps_z = (rotate_steps_z + amount + rotate_step_limit) % rotate_step_limit
-			target_rot_z = rotate_steps_z * rotate_step_size
+			rotate_steps_z = (rotate_steps_z + amount)
+			#target_rot_z = rotate_steps_z * rotate_step_size
 
 func update_translate(amount: int):
 	match current_axis:
@@ -202,6 +203,6 @@ func apply_transform():
 		node_rotate_y.global_rotation_degrees.y = rotate_steps_y * rotate_step_size
 		node_rotate_z.global_rotation_degrees.z = rotate_steps_z * rotate_step_size
 		
-		target_rot_x = rotate_steps_x * rotate_step_size
-		target_rot_y = rotate_steps_y * rotate_step_size
-		target_rot_z = rotate_steps_z * rotate_step_size
+		current_rotate_steps_x = rotate_steps_x
+		current_rotate_steps_y = rotate_steps_y
+		current_rotate_steps_z = rotate_steps_z
