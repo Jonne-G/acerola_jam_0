@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://bqbb110r5n75h"]
+[gd_scene load_steps=50 format=3 uid="uid://bqbb110r5n75h"]
 
 [ext_resource type="Material" uid="uid://c877mq2acku71" path="res://materials/orb_cloud.material" id="1_u05gd"]
 [ext_resource type="Script" path="res://gdscript/dynamic_camera_handler.gd" id="2_bt86e"]
@@ -21,7 +21,19 @@
 [ext_resource type="AudioStream" uid="uid://cg64064n8s4nc" path="res://sounds/bossa-antigua_loop.mp3" id="17_rc018"]
 [ext_resource type="Texture2D" uid="uid://d2lp06t8ynvs7" path="res://textures/star.png" id="17_wv722"]
 [ext_resource type="AudioStream" uid="uid://bvi1wo423r7mh" path="res://sounds/rotate_click.ogg" id="19_fl15v"]
+[ext_resource type="AudioStream" uid="uid://b6lgdk0088igr" path="res://sounds/axis_switch_click.mp3" id="20_c6101"]
 [ext_resource type="AudioStream" uid="uid://deot0hhvwu828" path="res://sounds/button_click.mp3" id="20_o3g10"]
+[ext_resource type="PackedScene" uid="uid://cq4yp3n45n2cq" path="res://scenes/prefabs/folder.tscn" id="24_0ns3b"]
+[ext_resource type="Texture2D" uid="uid://b0ycvceuxetfy" path="res://textures/number_1.png" id="25_c4ary"]
+[ext_resource type="Texture2D" uid="uid://bnpnj1viloykk" path="res://textures/number_2.png" id="26_ijs2f"]
+[ext_resource type="Texture2D" uid="uid://mt73sitvemmw" path="res://textures/number_3.png" id="27_eb8a6"]
+[ext_resource type="Texture2D" uid="uid://dofarth5aq6vj" path="res://textures/number_4.png" id="28_mk6gt"]
+[ext_resource type="Texture2D" uid="uid://fcaubnj003xg" path="res://textures/number_5.png" id="29_elwwc"]
+[ext_resource type="Texture2D" uid="uid://dw60akr62c0x3" path="res://textures/number_6.png" id="30_nnr3k"]
+[ext_resource type="Texture2D" uid="uid://di5qupnajvvcp" path="res://textures/number_7.png" id="31_h8lp7"]
+[ext_resource type="Texture2D" uid="uid://b8ms25j0bt4ya" path="res://textures/number_8.png" id="32_hjcop"]
+[ext_resource type="AudioStream" uid="uid://cej1hu2503cmf" path="res://sounds/puzzle_solve_fx.mp3" id="32_ogjll"]
+[ext_resource type="Texture2D" uid="uid://br2m7kxpmpvju" path="res://textures/number_9.png" id="33_echv7"]
 
 [sub_resource type="GDScript" id="GDScript_igwrn"]
 resource_name = "prepare_the_orb"
@@ -82,9 +94,8 @@ func _ready():
 	
 func tree_walk(node: Node):
 	for child in node.get_children():
-		if child is Button:
+		if child is BaseButton:
 			child.pressed.connect(GlobalAudioManager.emit_button_press)
-			print(child)
 		elif child is Control:
 			tree_walk(child)
 "
@@ -106,6 +117,31 @@ scale_max = 30.0
 color = Color(1, 0.309804, 0.309804, 1)
 hue_variation_min = -1.0
 hue_variation_max = 1.0
+
+[sub_resource type="GDScript" id="GDScript_nmxhb"]
+resource_name = "victory_particles"
+script/source = "extends GPUParticles2D
+
+@onready var viewport: Window = get_window()
+
+func _ready():
+	GlobalAudioManager.puzzle_solved.connect(victory)
+	
+	viewport.size_changed.connect(resize)
+	
+func victory():
+	restart()
+
+func resize():
+	var size: = Vector2(viewport.size)
+	
+	visibility_rect.size = size
+	
+	amount = int(size.x / 22.0)
+	
+	process_material.emission_shape_offset.x = size.x / 2.0
+	process_material.emission_shape_scale.x = size.x / 2.0
+"
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_p0n00"]
 
@@ -135,6 +171,47 @@ particles_anim_loop = false
 material = SubResource("StandardMaterial3D_pxlds")
 size = Vector2(1, 2)
 
+[sub_resource type="GDScript" id="GDScript_xkydp"]
+resource_name = "level_selector"
+script/source = "extends Node3D
+
+@onready var viewport: Viewport = get_viewport()
+@onready var world: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+
+func _input(event: InputEvent):
+	if !GlobalUIManager.select_camera.current || !event.is_action_pressed(\"mouse_left\"):
+		return
+	
+	var raycast: = mouse_raycast()
+	
+	if raycast.is_empty():
+		return
+	
+	var target = raycast[\"collider\"]
+	
+	if !target.name.begins_with(\"level_\"):
+		return
+	
+	# TODO: When hovering all folders change at once, how we fix that?
+	#target.contents.albedo_color = Color(1.0, 0.914, 0.69)
+	#
+	#target.contents.albedo_color = Color(0.878, 0.694, 0.0)
+	
+	GlobalFunctions._load_index = target.level_index
+	GlobalFunctions.load_level()
+	
+	GlobalUIManager.navigate_to_play()
+
+func mouse_raycast(exclude=[]) -> Dictionary:
+	var mouse_position = viewport.get_mouse_position()
+	var from = GlobalUIManager.select_camera.project_ray_origin(mouse_position)
+	var to   = from + GlobalUIManager.select_camera.project_ray_normal(mouse_position) * 1000.0
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	query.exclude = exclude
+	
+	return world.intersect_ray(query)
+"
+
 [sub_resource type="GDScript" id="GDScript_qoxcc"]
 resource_name = "audio_manager"
 script/source = "extends Node3D
@@ -143,8 +220,15 @@ script/source = "extends Node3D
 @onready var translate_volume_offset: = translate_click.volume_db
 @onready var rotate_click: AudioStreamPlayer = get_node(\"rotate_click\")
 @onready var rotate_volume_offset: = rotate_click.volume_db
+@onready var axis_switch_click: AudioStreamPlayer = get_node(\"rotate_click\")
+@onready var axis_switch_volume_offset: = axis_switch_click.volume_db
+
+
 @onready var button_press: AudioStreamPlayer = get_node(\"button_press\")
 @onready var button_volume_offset: = button_press.volume_db
+
+@onready var puzzle_solved: AudioStreamPlayer = get_node(\"puzzle_solved\")
+@onready var puzzle_solved_volume_offset: = puzzle_solved.volume_db
 
 @onready var music_lead: AudioStreamPlayer = get_node(\"music_lead\")
 @onready var music_loop: AudioStreamPlayer = get_node(\"music_loop\")
@@ -156,6 +240,8 @@ func _ready():
 	
 	GlobalAudioManager.music_level_update.connect(manage_music_levels)
 	GlobalAudioManager.fx_level_update.connect(manage_fx_levels)
+	
+	GlobalAudioManager.puzzle_solved.connect(play_puzzle_solved)
 	
 	GlobalAudioManager.button_pressed.connect(button_click)
 	
@@ -176,6 +262,10 @@ func manage_music_levels():
 	music_lead.volume_db = GlobalAudioManager.music_level
 	music_loop.volume_db = GlobalAudioManager.music_level
 
+func play_puzzle_solved():
+	puzzle_solved.volume_db = puzzle_solved_volume_offset + GlobalAudioManager.fx_level
+	puzzle_solved.play()
+
 func _input(event):
 	if !GlobalUIManager.in_game_menu.visible || GlobalUIManager.game_is_paused:
 		return
@@ -187,6 +277,10 @@ func _input(event):
 		rotate_click.pitch_scale = randf_range(0.975, 1.025) + float(event.is_action_pressed(\"v\")) * 0.02
 		rotate_click.volume_db   = rotate_volume_offset + GlobalAudioManager.fx_level + randf_range(-5, 0)
 		rotate_click.play()
+	elif event.is_action_pressed(\"axis_x\") || event.is_action_pressed(\"axis_y\") || event.is_action_pressed(\"axis_z\"):
+		axis_switch_click.pitch_scale = randf_range(0.975, 1.025)
+		axis_switch_click.volume_db   = axis_switch_volume_offset + GlobalAudioManager.fx_level + randf_range(-5, 0)
+		axis_switch_click.play()
 
 func button_click():
 	button_press.pitch_scale = randf_range(0.95, 1.05)
@@ -339,7 +433,6 @@ current = true
 script = SubResource("GDScript_t1npm")
 
 [node name="victory_particles" type="GPUParticles2D" parent="UI Layer"]
-unique_name_in_owner = true
 emitting = false
 amount = 60
 process_material = SubResource("ParticleProcessMaterial_vce3j")
@@ -347,6 +440,7 @@ lifetime = 5.0
 one_shot = true
 explosiveness = 1.0
 visibility_rect = Rect2(0, 0, 1280, 720)
+script = SubResource("GDScript_nmxhb")
 
 [node name="in-game_menu" parent="UI Layer" node_paths=PackedStringArray("subviewport") instance=ExtResource("9_ryrm3")]
 visible = false
@@ -409,6 +503,53 @@ visibility_aabb = AABB(-4, -113.712, -385.941, 8, 227.424, 771.881)
 process_material = SubResource("ParticleProcessMaterial_jovel")
 draw_pass_1 = SubResource("QuadMesh_tm6k2")
 
+[node name="level_folders" type="Node3D" parent="background"]
+script = SubResource("GDScript_xkydp")
+
+[node name="level_1" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(0.0530579, 0, -0.198015, 0, 0.205, 0, 0.198015, 0, 0.0530579, 0.765273, -0.555329, -0.240305)
+texture = ExtResource("25_c4ary")
+
+[node name="level_2" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(-0.0284894, 0.00524122, -0.202943, 0.00127066, 0.204932, 0.00511421, 0.203007, -0.000547175, -0.0285125, 1.12507, -0.550451, -0.238681)
+texture = ExtResource("26_ijs2f")
+level_index = 1
+
+[node name="level_3" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(-0.0166779, 0.0052007, -0.204254, 0.00127066, 0.204932, 0.00511421, 0.204316, -0.00084997, -0.0167046, 1.474, -0.550451, -0.188999)
+texture = ExtResource("27_eb8a6")
+level_index = 2
+
+[node name="level_4" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(0.0124127, 0.00502801, -0.204562, 0.00127066, 0.204932, 0.00511421, 0.20462, -0.00157761, 0.0123774, 1.83353, -0.550451, -0.188999)
+texture = ExtResource("28_mk6gt")
+level_index = 3
+
+[node name="level_5" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(-0.0240647, 0.00522807, -0.203515, 0.00127066, 0.204932, 0.00511421, 0.203579, -0.000661107, -0.0240892, 2.22503, -0.550451, -0.119496)
+texture = ExtResource("29_elwwc")
+level_index = 4
+
+[node name="level_6" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(0.0530477, -0.00402133, -0.197977, 0.0010408, 0.204961, -0.00388431, 0.198015, 0, 0.0530579, 0.965099, -0.547852, 0.498342)
+texture = ExtResource("30_nnr3k")
+level_index = 5
+
+[node name="level_7" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(-0.041631, 0, -0.200728, 0, 0.205, 0, 0.200728, 0, -0.041631, 1.4011, -0.555329, 0.523173)
+texture = ExtResource("31_h8lp7")
+level_index = 6
+
+[node name="level_8" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(-0.0108075, 0, -0.204715, 0, 0.205, 0, 0.204715, 0, -0.0108075, 1.74713, -0.548007, 0.532791)
+texture = ExtResource("32_hjcop")
+level_index = 7
+
+[node name="level_9" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
+transform = Transform3D(0.0148827, 0.00867745, -0.204275, -0.000630538, 0.204816, 0.00865451, 0.204458, 0, 0.0148961, 2.10946, -0.547293, 0.570782)
+texture = ExtResource("33_echv7")
+level_index = 8
+
 [node name="audio" type="Node3D" parent="."]
 process_mode = 3
 script = SubResource("GDScript_qoxcc")
@@ -423,10 +564,19 @@ stream = ExtResource("19_fl15v")
 volume_db = -5.0
 max_polyphony = 2
 
+[node name="axis_switch_click" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("20_c6101")
+volume_db = -1.0
+max_polyphony = 2
+
 [node name="button_press" type="AudioStreamPlayer" parent="audio"]
 stream = ExtResource("20_o3g10")
 volume_db = -2.0
 max_polyphony = 2
+
+[node name="puzzle_solved" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("32_ogjll")
+mix_target = 1
 
 [node name="music_lead" type="AudioStreamPlayer" parent="audio"]
 stream = ExtResource("16_ry22v")

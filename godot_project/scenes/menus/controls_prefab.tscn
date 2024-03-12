@@ -1,0 +1,162 @@
+[gd_scene load_steps=11 format=3 uid="uid://dtbo2e8pimd7g"]
+
+[ext_resource type="Texture2D" uid="uid://c5722bkxfoiro" path="res://textures/keyboard_arrows_horizontal_outline.png" id="1_uwsnp"]
+[ext_resource type="Texture2D" uid="uid://bapp4xkh33tlt" path="res://textures/keyboard_arrows_vertical_outline.png" id="2_pslyy"]
+[ext_resource type="Texture2D" uid="uid://j4yvt5ilibd6" path="res://textures/keyboard_f.png" id="3_wf4n1"]
+[ext_resource type="Texture2D" uid="uid://n4un8bgo0ld3" path="res://textures/keyboard_r.png" id="4_nhmr3"]
+[ext_resource type="Texture2D" uid="uid://dig420hs1wgm2" path="res://textures/mouse_left_outline.png" id="5_6l03v"]
+[ext_resource type="Texture2D" uid="uid://caqy2216tyvoo" path="res://textures/mouse_scroll_outline.png" id="6_rbf51"]
+[ext_resource type="Texture2D" uid="uid://d2erq1w04dald" path="res://textures/keyboard_a.png" id="7_cj335"]
+[ext_resource type="Texture2D" uid="uid://mveo8k6qa2ky" path="res://textures/keyboard_s.png" id="8_iuigx"]
+[ext_resource type="Texture2D" uid="uid://lxsdm1qmhpc0" path="res://textures/keyboard_d.png" id="9_h6m5k"]
+[ext_resource type="Texture2D" uid="uid://dkhwuh1q76vma" path="res://textures/keyboard_slash_forward.png" id="10_jiugf"]
+
+[node name="Controls" type="VBoxContainer"]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxTutorial" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="translate_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="HBoxContainer/VBoxTutorial/translate_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("1_uwsnp")
+expand_mode = 1
+
+[node name="text" type="Label" parent="HBoxContainer/VBoxTutorial/translate_hint"]
+layout_mode = 2
+text = "Move the projection"
+
+[node name="rotate_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="HBoxContainer/VBoxTutorial/rotate_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("2_pslyy")
+expand_mode = 1
+
+[node name="text" type="Label" parent="HBoxContainer/VBoxTutorial/rotate_hint"]
+layout_mode = 2
+text = "Rotate the projection"
+
+[node name="focus_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="HBoxContainer/VBoxTutorial/focus_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("3_wf4n1")
+expand_mode = 1
+
+[node name="text" type="Label" parent="HBoxContainer/VBoxTutorial/focus_hint"]
+layout_mode = 2
+text = "Reset the camera"
+
+[node name="reset_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="HBoxContainer/VBoxTutorial/reset_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("4_nhmr3")
+expand_mode = 1
+
+[node name="text" type="Label" parent="HBoxContainer/VBoxTutorial/reset_hint"]
+layout_mode = 2
+text = "Reset the puzzle"
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxTutorial2" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="rotate_camera_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial2"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="HBoxContainer/VBoxTutorial2/rotate_camera_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("5_6l03v")
+expand_mode = 1
+
+[node name="text" type="Label" parent="HBoxContainer/VBoxTutorial2/rotate_camera_hint"]
+layout_mode = 2
+text = "Hold and move to rotate the camera"
+
+[node name="zoom_camera_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial2"]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="HBoxContainer/VBoxTutorial2/zoom_camera_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("6_rbf51")
+expand_mode = 1
+
+[node name="text" type="Label" parent="HBoxContainer/VBoxTutorial2/zoom_camera_hint"]
+layout_mode = 2
+text = "Scroll to zoom in and out"
+
+[node name="swap_axis_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial2"]
+layout_mode = 2
+
+[node name="icon_x" type="TextureRect" parent="HBoxContainer/VBoxTutorial2/swap_axis_hint"]
+self_modulate = Color(1, 0.2, 0.2, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("7_cj335")
+expand_mode = 1
+
+[node name="icon_y" type="TextureRect" parent="HBoxContainer/VBoxTutorial2/swap_axis_hint"]
+self_modulate = Color(0.2, 1, 0.2, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("8_iuigx")
+expand_mode = 1
+
+[node name="icon_z" type="TextureRect" parent="HBoxContainer/VBoxTutorial2/swap_axis_hint"]
+self_modulate = Color(0.2, 0.2, 1, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("9_h6m5k")
+expand_mode = 1
+
+[node name="text" type="RichTextLabel" parent="HBoxContainer/VBoxTutorial2/swap_axis_hint"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+bbcode_enabled = true
+text = "Switch control to [color=#ff3333]R[/color], [color=#33ff33]G[/color], or [color=#3333ff]B[/color]"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="solve_hint" type="HBoxContainer" parent="HBoxContainer/VBoxTutorial2"]
+layout_mode = 2
+
+[node name="text" type="Label" parent="HBoxContainer/VBoxTutorial2/solve_hint"]
+layout_mode = 2
+text = "Feeling stuck? press"
+
+[node name="icon" type="TextureRect" parent="HBoxContainer/VBoxTutorial2/solve_hint"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("10_jiugf")
+expand_mode = 1
+
+[node name="text2" type="Label" parent="HBoxContainer/VBoxTutorial2/solve_hint"]
+layout_mode = 2
+text = "to solve the puzzle!"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Align the projections so they show up as white in the
+reference window bottom right of the screen.
+"
+horizontal_alignment = 1

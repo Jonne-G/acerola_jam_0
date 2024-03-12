@@ -1,0 +1,60 @@
+[gd_scene load_steps=10 format=3 uid="uid://cq4yp3n45n2cq"]
+
+[ext_resource type="ArrayMesh" uid="uid://ds1ok2dpkupw4" path="res://geometry/assets/level_file-contents.obj" id="1_n5vnc"]
+[ext_resource type="Texture2D" uid="uid://jj5lp7lexpk8" path="res://textures/tiling/Paper001_2K-JPG_Color.jpg" id="2_82ixi"]
+[ext_resource type="Texture2D" uid="uid://d0urixwq0qdwp" path="res://textures/tiling/Paper001_2K-JPG_NormalGL.jpg" id="3_b7rwv"]
+[ext_resource type="Texture2D" uid="uid://dow80ee6toqrt" path="res://textures/tiling/Paper001_2K-JPG_Roughness.jpg" id="4_1kcfk"]
+[ext_resource type="ArrayMesh" uid="uid://clibo7bvako1m" path="res://geometry/assets/level_file-folder.obj" id="5_68vb1"]
+
+[sub_resource type="GDScript" id="GDScript_33ghw"]
+resource_name = "folder_handler"
+script/source = "@tool
+extends StaticBody3D
+
+@export var texture: Texture2D
+@export var level_index: = 0
+
+@onready var decal: Decal = get_node(\"Decal\")
+@onready var contents: StandardMaterial3D = get_node(\"LevelFile-folder\").get_surface_override_material(0)
+
+
+func _ready():
+	decal.texture_albedo = texture
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8e0uf"]
+albedo_color = Color(1, 0.984314, 0.94902, 1)
+albedo_texture = ExtResource("2_82ixi")
+roughness_texture = ExtResource("4_1kcfk")
+normal_enabled = true
+normal_texture = ExtResource("3_b7rwv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ywei1"]
+albedo_color = Color(1, 0.913725, 0.690196, 1)
+albedo_texture = ExtResource("2_82ixi")
+roughness_texture = ExtResource("4_1kcfk")
+normal_enabled = true
+normal_texture = ExtResource("3_b7rwv")
+rim_tint = 1.0
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_rii5g"]
+points = PackedVector3Array(-1.47504, 0, -1.07682, -1.49383, 0, -1.0705, -1.47504, 0.00999695, -1.07682, 1.47471, 0, -1.07682, -1.5, 0, -1.05173, -1.49383, 0.00999695, -1.0705, -1.30472, 0.0268571, -1.07071, -1.28593, 0.0268037, -1.07682, 1.47471, 0.0268037, -1.07682, 1.4935, 0.0168601, -1.07071, 1.4935, 0, -1.0705, -1.5, 0.00999695, -1.05173, -1.5, 0, 1.05511, -1.31089, 0.0270216, -1.05195, 1.4935, 0.0268571, -1.07071, 1.49996, 0.0270216, -1.05195, 1.49996, 0.0170202, -1.05195, 1.49996, 0, -1.05173, -1.5, 0.0372497, 0.120373, -1.5, 0.00609419, 1.06986, 1.49996, 0, 1.05511, -1.46476, 0.0365073, 0.0349946, -1.5, 0.0454108, 1.0549, 1.49996, 0.0454108, 1.0549, -1.5, 0.0227987, 1.07682, 1.49996, 0.00609419, 1.06986, -1.5, 0.0394366, 1.06965, 1.49996, 0.0394366, 1.06965, 1.49996, 0.0227987, 1.07682)
+
+[node name="Folder" type="StaticBody3D"]
+script = SubResource("GDScript_33ghw")
+
+[node name="LevelFile-contents" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_n5vnc")
+surface_material_override/0 = SubResource("StandardMaterial3D_8e0uf")
+
+[node name="LevelFile-folder" type="MeshInstance3D" parent="."]
+mesh = ExtResource("5_68vb1")
+surface_material_override/0 = SubResource("StandardMaterial3D_ywei1")
+
+[node name="Decal" type="Decal" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.885082, 0.0414923, 0.540023)
+size = Vector3(1, 0.1, 1)
+modulate = Color(0.0588235, 0.0588235, 0.0588235, 1)
+
+[node name="collider" type="CollisionShape3D" parent="."]
+shape = SubResource("ConvexPolygonShape3D_rii5g")

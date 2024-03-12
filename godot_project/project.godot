@@ -28,6 +28,11 @@ GlobalAudioManager="*res://gdscript/global_audio_manager.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 
+[gui]
+
+theme/custom="res://misc/ui_theme.tres"
+theme/custom_font="res://misc/BagnardSans.otf"
+
 [input]
 
 axis_x={

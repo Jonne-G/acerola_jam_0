@@ -6,9 +6,13 @@
 resource_name = "main_menu"
 script/source = "extends Control
 
+@onready var viewport: Window = get_window()
+
 func _ready():
 	GlobalUIManager.main_menu = self
 	GlobalUIManager.current_menu = self
+	
+	viewport.size_changed.connect(resize)
 
 func play_callback():
 	GlobalUIManager.navigate_to_select()
@@ -19,6 +23,8 @@ func settings_callback():
 func exit_callback():
 	GlobalUIManager.exit_game()
 
+func resize():
+	GlobalFunctions.fix_font([get_node(\"VBoxContainer/CenterContainer/title\")], 100)
 "
 
 [node name="MainMenu" type="Control"]

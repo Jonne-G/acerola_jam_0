@@ -43,11 +43,12 @@ var rotate_steps_z: = 0
 var current_rotate_steps_z: = 0.0
 var target_pos_z: float = 0.0
 
+var downscale = Vector3.ONE / 16.0 # ☺ Crime against humanity, I have to scale everything down, whoops
+
 func _ready():
 	press_hold_rotate.timeout.connect(hold_rotate_callback)
 	press_hold_translate.timeout.connect(hold_translate_callback)
 	
-	var downscale = Vector3.ONE / 16.0 # ☺ Crime against humanity, I have to scale everything down, whoops
 	node_mesh_x.scale = downscale
 	node_mesh_y.scale = downscale
 	node_mesh_z.scale = downscale
@@ -77,6 +78,9 @@ func _ready():
 	node_mesh_z.set_surface_override_material(0, material_z)
 
 func _process(delta: float):
+	if !GlobalUIManager.play_camera.current:
+		return
+	
 	node_translate_x.global_position.z = lerp(node_translate_x.global_position.z, target_pos_x, delta * 5.0)
 	node_translate_y.global_position.x = lerp(node_translate_y.global_position.x, target_pos_y, delta * 5.0)
 	node_translate_z.global_position.y = lerp(node_translate_z.global_position.y, target_pos_z, delta * 5.0)
@@ -88,6 +92,10 @@ func _process(delta: float):
 	node_rotate_x.global_rotation_degrees.x = current_rotate_steps_x * rotate_step_size
 	node_rotate_y.global_rotation_degrees.y = current_rotate_steps_y * rotate_step_size
 	node_rotate_z.global_rotation_degrees.z = current_rotate_steps_z * rotate_step_size
+	
+	node_mesh_x.scale = lerp(node_mesh_x.scale, downscale, delta * 5.0)
+	node_mesh_y.scale = lerp(node_mesh_y.scale, downscale, delta * 5.0)
+	node_mesh_z.scale = lerp(node_mesh_z.scale, downscale, delta * 5.0)
 
 func _input(event):
 	if !GlobalUIManager.in_game_menu.visible || GlobalUIManager.game_is_paused:
@@ -163,8 +171,7 @@ func check_victory():
 	
 	if (fixed_rotate_x == 0 && fixed_rotate_y == 0 && fixed_rotate_z == 0 &&
 		translate_steps_x == 0 && translate_steps_y == 0 && translate_steps_z == 0):
-		var particles: GPUParticles2D = %victory_particles
-		particles.restart()
+		GlobalAudioManager.puzzle_solved.emit()
 
 func update_rotate(amount: int):
 	match current_axis:
@@ -194,6 +201,14 @@ func apply_transform():
 		node_translate_x.global_position.z = translate_steps_x * translate_step_size
 		node_translate_y.global_position.x = translate_steps_y * translate_step_size
 		node_translate_z.global_position.y = translate_steps_z * translate_step_size
+	
+		#node_translate_x.global_position.z = -1.0
+		#node_translate_y.global_position.x = -1.0
+		#node_translate_z.global_position.y = -1.0
+		
+		node_mesh_x.scale = Vector3.ZERO
+		node_mesh_y.scale = Vector3.ZERO
+		node_mesh_z.scale = Vector3.ZERO
 		
 		target_pos_x = translate_steps_x * translate_step_size
 		target_pos_y = translate_steps_y * translate_step_size

@@ -75,6 +75,7 @@ func close_settings():
 	else:
 		scroll_menu(settings_menu, current_menu)
 
+
 func scroll_menu(start_menu: Control, target_menu: Control):
 	var screen_size: = get_window().size
 	
@@ -94,6 +95,21 @@ func scroll_menu(start_menu: Control, target_menu: Control):
 	tween.parallel().tween_property(target_menu, "position", mid, menu_transition)
 	
 	tween.tween_callback(func(): start_menu.visible = false)
+	
+	tween.play()
+
+func fade_menu(menu: Control, fade_out: bool):
+	var from_colour: = Color(1.0, 1.0, 1.0, 1.0 if fade_out else 0.0)
+	var to_colour: = Color(1.0, 1.0, 1.0, 0.0 if fade_out else 1.0)
+	
+	menu.visible = true
+	menu.modulate = from_colour
+	
+	var tween: Tween = create_tween()
+	
+	tween.tween_property(menu, "modulate", to_colour, menu_transition)
+	
+	tween.tween_callback(func(): menu.visible = !fade_out)
 	
 	tween.play()
 

@@ -16,12 +16,20 @@ https://polyhaven.com/
 - wood_floor_worn_2k
 
 https://ambientcg.com
-- Metal 002
-- 3DBread005
-- 3DCucumber001
+Created using:
+- https://ambientCG.com/a/Paper001Metal 002
+- https://ambientCG.com/a/Paper0013DBread005
+- https://ambientCG.com/a/Paper0013DCucumber001
+- https://ambientCG.com/a/Paper001Paper001
+licensed under the Creative Commons CC0 1.0 Universal License.
 
 https://sketchfab.com
 - "Projector" (https://skfb.ly/6V77x) by Alexander_Borisevich is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
+
+Input Prompts (1.0)
+Created/distributed by Kenney (www.kenney.nl)
+License: (Creative Commons Zero, CC0)
+http://creativecommons.org/publicdomain/zero/1.0/
 
 
 Audio & Music:
@@ -33,6 +41,10 @@ UI SFX Set
 by  Kenney Vleugels (Kenney.nl)
 License (Creative Commons Zero, CC0)
 http://creativecommons.org/publicdomain/zero/1.0/
+
+Applause FX
+22 CROWDS, General - Ends-.wav from BBC Sound Effects Library on gamesounds.xyz
+https://gamesounds.xyz/?dir=BBC%20Sound%20Effects%20Library/BBC%2039%20-%20Schools%20%26%20Crowds
 
 
 Fonts:

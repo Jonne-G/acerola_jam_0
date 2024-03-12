@@ -8,6 +8,8 @@ signal fx_level_update
 
 signal button_pressed
 
+signal puzzle_solved
+
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	

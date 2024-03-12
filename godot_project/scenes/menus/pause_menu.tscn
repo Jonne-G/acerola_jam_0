@@ -1,10 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://bbevwgx3lpyux"]
+[gd_scene load_steps=3 format=3 uid="uid://bbevwgx3lpyux"]
 
-[ext_resource type="Texture2D" uid="uid://c5722bkxfoiro" path="res://textures/keyboard_arrows_horizontal_outline.png" id="1_ugb6h"]
-[ext_resource type="Texture2D" uid="uid://bapp4xkh33tlt" path="res://textures/keyboard_arrows_vertical_outline.png" id="2_jaewi"]
-[ext_resource type="Texture2D" uid="uid://d2erq1w04dald" path="res://textures/keyboard_a.png" id="3_pwbsg"]
-[ext_resource type="Texture2D" uid="uid://mveo8k6qa2ky" path="res://textures/keyboard_s.png" id="4_s2qnr"]
-[ext_resource type="Texture2D" uid="uid://lxsdm1qmhpc0" path="res://textures/keyboard_d.png" id="5_vykoj"]
+[ext_resource type="PackedScene" uid="uid://dtbo2e8pimd7g" path="res://scenes/menus/controls_prefab.tscn" id="1_ijyi3"]
 
 [sub_resource type="GDScript" id="GDScript_2t6e4"]
 resource_name = "pause_menu"
@@ -49,92 +45,31 @@ grow_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
 
-[node name="continue_button" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="VBoxButtons" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="continue_button" type="Button" parent="CenterContainer/VBoxContainer/VBoxButtons"]
 layout_mode = 2
 text = "continue"
 
-[node name="level-select_button" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="level-select_button" type="Button" parent="CenterContainer/VBoxContainer/VBoxButtons"]
 layout_mode = 2
 text = "level select"
 
-[node name="settings_button" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="settings_button" type="Button" parent="CenterContainer/VBoxContainer/VBoxButtons"]
 layout_mode = 2
 text = "settings"
 
-[node name="exit_button" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="exit_button" type="Button" parent="CenterContainer/VBoxContainer/VBoxButtons"]
 layout_mode = 2
-text = "exit"
+text = "main menu"
 
-[node name="translate_hint" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="icon" type="TextureRect" parent="CenterContainer/VBoxContainer/translate_hint"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("1_ugb6h")
-expand_mode = 1
-
-[node name="text" type="Label" parent="CenterContainer/VBoxContainer/translate_hint"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Translate on axis"
-
-[node name="rotate_hint" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+[node name="Controls" parent="CenterContainer/VBoxContainer" instance=ExtResource("1_ijyi3")]
 layout_mode = 2
 
-[node name="icon" type="TextureRect" parent="CenterContainer/VBoxContainer/rotate_hint"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("2_jaewi")
-expand_mode = 1
-
-[node name="text" type="Label" parent="CenterContainer/VBoxContainer/rotate_hint"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Rotate around"
-
-[node name="swap_axis_hint" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="icon_x" type="TextureRect" parent="CenterContainer/VBoxContainer/swap_axis_hint"]
-self_modulate = Color(1, 0.2, 0.2, 1)
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("3_pwbsg")
-expand_mode = 1
-
-[node name="icon_y" type="TextureRect" parent="CenterContainer/VBoxContainer/swap_axis_hint"]
-self_modulate = Color(0.2, 1, 0.2, 1)
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("4_s2qnr")
-expand_mode = 1
-
-[node name="icon_z" type="TextureRect" parent="CenterContainer/VBoxContainer/swap_axis_hint"]
-self_modulate = Color(0.2, 0.2, 1, 1)
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("5_vykoj")
-expand_mode = 1
-
-[node name="text" type="RichTextLabel" parent="CenterContainer/VBoxContainer/swap_axis_hint"]
-custom_minimum_size = Vector2(0, 25)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_font_sizes/normal_font_size = 15
-bbcode_enabled = true
-text = "Switch axis to [color=#ff3333]X[/color], [color=#33ff33]Y[/color], or [color=#3333ff]Z[/color]"
-scroll_active = false
-autowrap_mode = 0
-
-[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Try to make the different shapes overlap.
-Use the static-window as reference!"
-
-[connection signal="pressed" from="CenterContainer/VBoxContainer/continue_button" to="." method="continue_callback"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/level-select_button" to="." method="level_select_callback"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/settings_button" to="." method="settings_callback"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/exit_button" to="." method="exit_callback"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VBoxButtons/continue_button" to="." method="continue_callback"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VBoxButtons/level-select_button" to="." method="level_select_callback"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VBoxButtons/settings_button" to="." method="settings_callback"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VBoxButtons/exit_button" to="." method="exit_callback"]

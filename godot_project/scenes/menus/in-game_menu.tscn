@@ -1,19 +1,98 @@
-[gd_scene load_steps=3 format=3 uid="uid://b5gj0u0jx4rbk"]
+[gd_scene load_steps=7 format=3 uid="uid://b5gj0u0jx4rbk"]
 
 [ext_resource type="Script" path="res://gdscript/load_level_button.gd" id="1_6g3nw"]
+[ext_resource type="Texture2D" uid="uid://d2erq1w04dald" path="res://textures/keyboard_a.png" id="1_nmsos"]
+[ext_resource type="Texture2D" uid="uid://mveo8k6qa2ky" path="res://textures/keyboard_s.png" id="2_yqosf"]
+[ext_resource type="Texture2D" uid="uid://lxsdm1qmhpc0" path="res://textures/keyboard_d.png" id="3_s3usp"]
+[ext_resource type="FontFile" uid="uid://bcipsi3jombov" path="res://misc/GapSansBold.ttf" id="5_sqa5g"]
 
 [sub_resource type="GDScript" id="GDScript_p2eli"]
 resource_name = "in-game menu"
 script/source = "extends Control
 
 @export var subviewport: SubViewport
-@onready var viewport_texture: TextureRect = get_node(\"HSplitContainer/VSplitContainer/Panel/MarginContainer/AspectRatioContainer/viewport\")
+@onready var viewport_texture: TextureRect = get_node(\"hsplit/vsplit/Panel/margin/vbox/ratio/viewport\")
+
+@onready var x_button: TextureButton = get_node(\"hsplit/vsplit/Panel/margin/vbox/center/hbox/xbutton\")
+@onready var y_button: TextureButton = get_node(\"hsplit/vsplit/Panel/margin/vbox/center/hbox/ybutton\")
+@onready var z_button: TextureButton = get_node(\"hsplit/vsplit/Panel/margin/vbox/center/hbox/zbutton\")
+
+@onready var solved_overlay: CenterContainer = get_node(\"center_victory_screen\")
+@onready var solve_text: Label = get_node(\"center_victory_screen/vbox/solved!\")
+@onready var thats_all_folks: Label = get_node(\"center_victory_screen/vbox/finisher\")
+@onready var next_projection: Button = get_node(\"center_victory_screen/vbox/center/hbox/next_projection\")
+
+var selected: = 1.0
+var deselected: = 0.4
+var base_value: = 0.2
 
 func _ready():
+	solved_overlay.visible = false
+	GlobalAudioManager.puzzle_solved.connect(solve_callback)
+	
 	GlobalUIManager.in_game_menu = self
 	visible = false
 	
 	viewport_texture.texture = subviewport.get_texture()
+	
+	deselect()
+	x_button.modulate = Color(selected, base_value, base_value)
+
+func _input(event):
+	if GlobalUIManager.game_is_paused || !GlobalUIManager.play_camera.current:
+		return
+	
+	if event.is_action_pressed(\"axis_x\"):
+		deselect()
+		x_button.modulate = Color(selected, base_value, base_value)
+	elif event.is_action_pressed(\"axis_y\"):
+		deselect()
+		y_button.modulate = Color(base_value, selected, base_value)
+	elif event.is_action_pressed(\"axis_z\"):
+		deselect()
+		z_button.modulate = Color(base_value, base_value, selected)
+
+func deselect():
+	x_button.modulate = Color(deselected, base_value, base_value)
+	y_button.modulate = Color(base_value, deselected, base_value)
+	z_button.modulate = Color(base_value, base_value, deselected)
+
+func xbutton_callback():
+	GlobalFunctions.manager.current_axis = GyroscopeManager.AXIS.X
+	deselect()
+	x_button.modulate = Color(selected, base_value, base_value)
+
+func ybutton_callback():
+	GlobalFunctions.manager.current_axis = GyroscopeManager.AXIS.Y
+	deselect()
+	y_button.modulate = Color(base_value, selected, base_value)
+
+func zbutton_callback():
+	GlobalFunctions.manager.current_axis = GyroscopeManager.AXIS.Z
+	deselect()
+	z_button.modulate = Color(base_value, base_value, selected)
+
+func solve_callback():
+	next_projection.visible = GlobalFunctions._load_index < 3
+	thats_all_folks.visible = GlobalFunctions._load_index == 3
+	
+	GlobalFunctions.fix_font([thats_all_folks, solve_text], 50)
+	
+	GlobalUIManager.fade_menu(solved_overlay, false)
+
+func next_projection_callback():
+	GlobalUIManager.fade_menu(solved_overlay, true)
+	
+	GlobalFunctions._load_index += 1
+	GlobalFunctions.load_level()
+
+func projection_select_callback():
+	GlobalUIManager.fade_menu(solved_overlay, true)
+	GlobalUIManager.navigate_to_select()
+
+func main_menu_callback():
+	GlobalUIManager.fade_menu(solved_overlay, true)
+	GlobalUIManager.navigate_to_main()
 "
 
 [node name="in-game_menu" type="Control"]
@@ -25,7 +104,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_p2eli")
 
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
+[node name="hsplit" type="HSplitContainer" parent="."]
 custom_minimum_size = Vector2(168, 0)
 layout_mode = 1
 anchors_preset = 15
@@ -35,43 +114,80 @@ grow_horizontal = 2
 grow_vertical = 2
 split_offset = 920
 
-[node name="empty" type="Control" parent="HSplitContainer"]
+[node name="empty" type="Control" parent="hsplit"]
 layout_mode = 2
 
-[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer"]
+[node name="vsplit" type="VSplitContainer" parent="hsplit"]
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
-split_offset = 500
+split_offset = 482
 
-[node name="empty" type="Control" parent="HSplitContainer/VSplitContainer"]
+[node name="empty" type="Control" parent="hsplit/vsplit"]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="HSplitContainer/VSplitContainer"]
+[node name="Panel" type="Panel" parent="hsplit/vsplit"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer/VSplitContainer/Panel"]
+[node name="margin" type="MarginContainer" parent="hsplit/vsplit/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_vertical = 3
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 10
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HSplitContainer/VSplitContainer/Panel/MarginContainer"]
+[node name="vbox" type="VBoxContainer" parent="hsplit/vsplit/Panel/margin"]
 layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="center" type="CenterContainer" parent="hsplit/vsplit/Panel/margin/vbox"]
+layout_mode = 2
+
+[node name="hbox" type="HBoxContainer" parent="hsplit/vsplit/Panel/margin/vbox/center"]
+layout_mode = 2
+
+[node name="xbutton" type="TextureButton" parent="hsplit/vsplit/Panel/margin/vbox/center/hbox"]
+modulate = Color(0.6, 0.2, 0.2, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture_normal = ExtResource("1_nmsos")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="ybutton" type="TextureButton" parent="hsplit/vsplit/Panel/margin/vbox/center/hbox"]
+modulate = Color(0.2, 1, 0.2, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture_normal = ExtResource("2_yqosf")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="zbutton" type="TextureButton" parent="hsplit/vsplit/Panel/margin/vbox/center/hbox"]
+modulate = Color(0.2, 0.2, 1, 1)
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture_normal = ExtResource("3_s3usp")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="ratio" type="AspectRatioContainer" parent="hsplit/vsplit/Panel/margin/vbox"]
+layout_mode = 2
+size_flags_vertical = 3
 ratio = 1.7778
 
-[node name="viewport" type="TextureRect" parent="HSplitContainer/VSplitContainer/Panel/MarginContainer/AspectRatioContainer"]
+[node name="viewport" type="TextureRect" parent="hsplit/vsplit/Panel/margin/vbox/ratio"]
 custom_minimum_size = Vector2(128, 72)
 layout_mode = 2
 expand_mode = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -153,3 +269,65 @@ theme_override_font_sizes/font_size = 20
 text = "9"
 script = ExtResource("1_6g3nw")
 level_index = 9
+
+[node name="center_victory_screen" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -75.5
+offset_bottom = 75.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="vbox" type="VBoxContainer" parent="center_victory_screen"]
+layout_mode = 2
+
+[node name="solved!" type="Label" parent="center_victory_screen/vbox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.929412, 0.890196, 0.760784, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.713726)
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("5_sqa5g")
+theme_override_font_sizes/font_size = 50
+text = "Looks like the stars aligned!"
+horizontal_alignment = 1
+
+[node name="finisher" type="Label" parent="center_victory_screen/vbox"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.929412, 0.890196, 0.760784, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.713726)
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("5_sqa5g")
+theme_override_font_sizes/font_size = 50
+text = "That's all, thank you for playing!"
+horizontal_alignment = 1
+
+[node name="center" type="CenterContainer" parent="center_victory_screen/vbox"]
+layout_mode = 2
+
+[node name="hbox" type="HBoxContainer" parent="center_victory_screen/vbox/center"]
+layout_mode = 2
+
+[node name="next_projection" type="Button" parent="center_victory_screen/vbox/center/hbox"]
+layout_mode = 2
+text = "Next Projection"
+
+[node name="projection_select" type="Button" parent="center_victory_screen/vbox/center/hbox"]
+layout_mode = 2
+text = "Projection Select"
+
+[node name="main_menu" type="Button" parent="center_victory_screen/vbox/center/hbox"]
+layout_mode = 2
+text = "Main Menu"
+
+[connection signal="pressed" from="hsplit/vsplit/Panel/margin/vbox/center/hbox/xbutton" to="." method="xbutton_callback"]
+[connection signal="pressed" from="hsplit/vsplit/Panel/margin/vbox/center/hbox/ybutton" to="." method="ybutton_callback"]
+[connection signal="pressed" from="hsplit/vsplit/Panel/margin/vbox/center/hbox/zbutton" to="." method="zbutton_callback"]
+[connection signal="pressed" from="center_victory_screen/vbox/center/hbox/next_projection" to="." method="next_projection_callback"]
+[connection signal="pressed" from="center_victory_screen/vbox/center/hbox/projection_select" to="." method="projection_select_callback"]
+[connection signal="pressed" from="center_victory_screen/vbox/center/hbox/main_menu" to="." method="main_menu_callback"]

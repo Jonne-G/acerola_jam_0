@@ -15,6 +15,13 @@ func get_filecount() -> int:
 func path_at_index(index: int) -> String:
 	return _base_path + "level_%d.res" % [index]
 
+func fix_font(labels: Array[Label], pixels: float):
+	var window: = get_window()
+	var font_size: int = int(float(window.size.x) / 1280.0 * pixels)
+	
+	for label in labels:
+		label.add_theme_font_size_override("font_size", font_size)
+
 func save_level():
 	var current_level: LevelData = LevelData.new(
 		manager.translate_steps_x, manager.translate_steps_y, manager.translate_steps_z,

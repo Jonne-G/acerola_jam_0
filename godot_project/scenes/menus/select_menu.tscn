@@ -8,8 +8,8 @@ func _ready():
 	GlobalUIManager.select_menu = self
 	visible = false
 
-func just_play_callback():
-	GlobalUIManager.navigate_to_play()
+func back_to_menu_callback():
+	GlobalUIManager.navigate_to_main()
 "
 
 [node name="SelectMenu" type="Control"]
@@ -21,16 +21,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_16jhu")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="Button" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = -109.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Back to main"
 
-[node name="just_play" type="Button" parent="CenterContainer"]
-layout_mode = 2
-text = "just play lmao"
-
-[connection signal="pressed" from="CenterContainer/just_play" to="." method="just_play_callback"]
+[connection signal="pressed" from="Button" to="." method="back_to_menu_callback"]
