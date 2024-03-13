@@ -69,14 +69,13 @@ func load_level():
 	material_y.shader = load("res://materials/shaders/flat_colour.gdshader")
 	material_z.shader = load("res://materials/shaders/flat_colour.gdshader")
 	
-	if level.uses_vertexcolour:
-		material_x.set_shader_parameter("use_vertex_colour", true)
-		material_y.set_shader_parameter("use_vertex_colour", true)
-		material_z.set_shader_parameter("use_vertex_colour", true)
-	else:
-		material_x.set_shader_parameter("colour", Vector3(1.0, 0.0, 0.0))
-		material_y.set_shader_parameter("colour", Vector3(0.0, 1.0, 0.0))
-		material_z.set_shader_parameter("colour", Vector3(0.0, 0.0, 1.0))
+	material_x.set_shader_parameter("colour", Vector3(1.0, 0.0, 0.0))
+	material_y.set_shader_parameter("colour", Vector3(0.0, 1.0, 0.0))
+	material_z.set_shader_parameter("colour", Vector3(0.0, 0.0, 1.0))
+	
+	material_x.set_shader_parameter("use_vertex_colour", level.uses_vertexcolour)
+	material_y.set_shader_parameter("use_vertex_colour", level.uses_vertexcolour)
+	material_z.set_shader_parameter("use_vertex_colour", level.uses_vertexcolour)	
 	
 	manager.node_mesh_x.set_surface_override_material(0, material_x)
 	manager.node_mesh_y.set_surface_override_material(0, material_y)
@@ -96,9 +95,24 @@ func load_level():
 	
 func _input(event: InputEvent):
 	if event.is_action_pressed("save", false, true):
+		print("saved level")
 		save_level()
 	elif event.is_action_pressed("load", false, true):
+		print("loaded level")
 		load_level()
+	elif event.is_action_pressed("toggle_vertex_colour"):
+		print("toggled vertex colour")
+		var material_x = manager.node_mesh_x.get_surface_override_material(0)
+		var material_y = manager.node_mesh_y.get_surface_override_material(0)
+		var material_z = manager.node_mesh_z.get_surface_override_material(0)
+		
+		material_x.set_shader_parameter("use_vertex_colour", !material_x.get_shader_parameter("use_vertex_colour"))
+		material_y.set_shader_parameter("use_vertex_colour", !material_y.get_shader_parameter("use_vertex_colour"))
+		material_z.set_shader_parameter("use_vertex_colour", !material_z.get_shader_parameter("use_vertex_colour"))
+		
+		manager.node_mesh_x.set_surface_override_material(0, material_x)
+		manager.node_mesh_y.set_surface_override_material(0, material_y)
+		manager.node_mesh_z.set_surface_override_material(0, material_z)
 	elif event is InputEventKey && event.is_pressed():
 		var number: int = event.physical_keycode - 48
 		

@@ -15,6 +15,7 @@ var dynamic_camera_handler: Node3D
 
 var start_camera: Camera3D
 var select_camera: Camera3D
+var credits_camera: Camera3D
 var play_camera: Camera3D
 
 var active_camera: Camera3D # used for animation
@@ -31,6 +32,8 @@ func _input(event):
 			continue_game()
 		elif in_game_menu.visible:
 			pause_game()
+	elif event.is_action_pressed("force_play"):
+		navigate_to_play()
 
 func pause_game():
 	pause_menu.visible = true
@@ -60,6 +63,11 @@ func navigate_to_play():
 	switch_ui_from_to(in_game_menu, play_camera)
 	current_menu = in_game_menu
 	current_camera = play_camera
+
+func navigate_to_credits():
+	switch_ui_from_to(select_menu, credits_camera)
+	current_menu = select_menu
+	current_camera = credits_camera
 
 func open_settings():
 	if game_is_paused:

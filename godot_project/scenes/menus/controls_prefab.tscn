@@ -158,5 +158,6 @@ text = "to solve the puzzle!"
 layout_mode = 2
 text = "Align the projections so they show up as white in the
 reference window bottom right of the screen.
-"
+The reference view can be resized, by dragging at the
+edges of the grey panel."
 horizontal_alignment = 1

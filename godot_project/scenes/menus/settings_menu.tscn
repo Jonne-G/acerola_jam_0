@@ -14,11 +14,11 @@ func _ready():
 	visible = false
 
 func music_slider_callback(_some_value):
-	GlobalAudioManager.music_level = (1.0 - music_slider.value / 100.0) * -80.0
+	GlobalAudioManager.music_level = sqrt(music_slider.value) * 4.0 - 40.0
 	GlobalAudioManager.music_level_update.emit()
-	
+
 func fx_slider_callback(_some_value):
-	GlobalAudioManager.fx_level = (1.0 - fx_slider.value / 100.0) * -80.0
+	GlobalAudioManager.fx_level = sqrt(fx_slider.value) * 4.0 - 40.0
 	GlobalAudioManager.fx_level_update.emit()
 
 func back_pressed():

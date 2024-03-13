@@ -20,6 +20,9 @@ func play_callback():
 func settings_callback():
 	GlobalUIManager.open_settings()
 
+func credits_callback():
+	GlobalUIManager.navigate_to_credits()
+
 func exit_callback():
 	GlobalUIManager.exit_game()
 
@@ -72,6 +75,11 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "play"
 
+[node name="credits_button" type="Button" parent="VBoxContainer/CenterContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "credits"
+
 [node name="setting_button" type="Button" parent="VBoxContainer/CenterContainer2/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -83,5 +91,6 @@ size_flags_horizontal = 4
 text = "exit"
 
 [connection signal="pressed" from="VBoxContainer/CenterContainer2/VBoxContainer/play_button" to="." method="play_callback"]
+[connection signal="pressed" from="VBoxContainer/CenterContainer2/VBoxContainer/credits_button" to="." method="credits_callback"]
 [connection signal="pressed" from="VBoxContainer/CenterContainer2/VBoxContainer/setting_button" to="." method="settings_callback"]
 [connection signal="pressed" from="VBoxContainer/CenterContainer2/VBoxContainer/exit_button" to="." method="exit_callback"]

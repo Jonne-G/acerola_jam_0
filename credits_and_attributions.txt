@@ -8,12 +8,13 @@ Isa
 
 Models & Textures
 https://polyhaven.com/
-- modular_industrial_pipes_01_2k
-- vintage_oil_lamp_2k
-- WoodenTable_01_2k
-- green_metal_rust_2k
-- brick_wall_006_2k
-- wood_floor_worn_2k
+- modular_industrial_pipes_01
+- vintage_oil_lamp
+- WoodenTable_01
+- fancy_picture_frame_01
+- green_metal_rust
+- brick_wall_006
+- wood_floor_worn
 
 https://ambientcg.com
 Created using:

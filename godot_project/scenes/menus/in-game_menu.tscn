@@ -22,9 +22,14 @@ script/source = "extends Control
 @onready var thats_all_folks: Label = get_node(\"center_victory_screen/vbox/finisher\")
 @onready var next_projection: Button = get_node(\"center_victory_screen/vbox/center/hbox/next_projection\")
 
+@onready var hsplit: HSplitContainer = get_node(\"hsplit\")
+@onready var vsplit: VSplitContainer = get_node(\"hsplit/vsplit\")
+
 var selected: = 1.0
 var deselected: = 0.4
 var base_value: = 0.2
+
+var previous_size: = Vector2i(1280, 720)
 
 func _ready():
 	solved_overlay.visible = false
@@ -37,6 +42,18 @@ func _ready():
 	
 	deselect()
 	x_button.modulate = Color(selected, base_value, base_value)
+	
+	get_viewport().size_changed.connect(resize)
+
+func resize():
+	var new_size: = get_window().size
+	
+	var relative = Vector2(new_size) / Vector2(previous_size)
+	
+	hsplit.split_offset *= relative.x
+	vsplit.split_offset *= relative.y
+	
+	previous_size = new_size
 
 func _input(event):
 	if GlobalUIManager.game_is_paused || !GlobalUIManager.play_camera.current:
