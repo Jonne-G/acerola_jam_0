@@ -28,7 +28,9 @@ func _ready():
 
 func _input(event):
 	if event.is_action_pressed("escape"):
-		if pause_menu.visible:
+		if select_camera.current || credits_camera.is_current:
+			navigate_to_main()
+		elif pause_menu.visible:
 			continue_game()
 		elif in_game_menu.visible:
 			pause_game()

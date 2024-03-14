@@ -90,8 +90,8 @@ func zbutton_callback():
 	z_button.modulate = Color(base_value, base_value, selected)
 
 func solve_callback():
-	next_projection.visible = GlobalFunctions._load_index < 3
-	thats_all_folks.visible = GlobalFunctions._load_index == 3
+	next_projection.visible = GlobalFunctions._load_index < 6
+	thats_all_folks.visible = GlobalFunctions._load_index >= 6
 	
 	GlobalFunctions.fix_font([thats_all_folks, solve_text], 50)
 	

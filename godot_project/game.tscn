@@ -1,13 +1,11 @@
-[gd_scene load_steps=51 format=3 uid="uid://bqbb110r5n75h"]
+[gd_scene load_steps=49 format=3 uid="uid://bqbb110r5n75h"]
 
 [ext_resource type="Material" uid="uid://c877mq2acku71" path="res://materials/orb_cloud.material" id="1_u05gd"]
 [ext_resource type="Script" path="res://gdscript/dynamic_camera_handler.gd" id="2_bt86e"]
 [ext_resource type="Script" path="res://gdscript/nodes/gyroscope_manager.gd" id="3_paq3b"]
-[ext_resource type="ArrayMesh" uid="uid://ba8keo0anriug" path="res://geometry/stars_x.obj" id="4_wkjqv"]
-[ext_resource type="ArrayMesh" uid="uid://dyvo5dc0l2r1s" path="res://geometry/stars_y.obj" id="6_6cp1d"]
+[ext_resource type="ArrayMesh" uid="uid://u3a7qwt2ec0c" path="res://geometry/gizmo.obj" id="4_tlfq2"]
 [ext_resource type="PackedScene" uid="uid://b7nduowgohq5c" path="res://scenes/collections/interior.tscn" id="6_t7i5v"]
 [ext_resource type="CameraAttributesPractical" uid="uid://dx1th43ccphmv" path="res://misc/main_scene-camera_attributes.tres" id="7_16whd"]
-[ext_resource type="ArrayMesh" uid="uid://b4mxk32guf8my" path="res://geometry/stars_z.obj" id="7_t8n3l"]
 [ext_resource type="PackedScene" uid="uid://bbevwgx3lpyux" path="res://scenes/menus/pause_menu.tscn" id="8_bvuim"]
 [ext_resource type="PackedScene" uid="uid://b5gj0u0jx4rbk" path="res://scenes/menus/in-game_menu.tscn" id="9_ryrm3"]
 [ext_resource type="PackedScene" uid="uid://bdh524aalrwqq" path="res://scenes/menus/select_menu.tscn" id="10_tsfl5"]
@@ -33,9 +31,7 @@
 [ext_resource type="Texture2D" uid="uid://fcaubnj003xg" path="res://textures/number_5.png" id="29_elwwc"]
 [ext_resource type="Texture2D" uid="uid://dw60akr62c0x3" path="res://textures/number_6.png" id="30_nnr3k"]
 [ext_resource type="Texture2D" uid="uid://di5qupnajvvcp" path="res://textures/number_7.png" id="31_h8lp7"]
-[ext_resource type="Texture2D" uid="uid://b8ms25j0bt4ya" path="res://textures/number_8.png" id="32_hjcop"]
 [ext_resource type="AudioStream" uid="uid://cej1hu2503cmf" path="res://sounds/puzzle_solve_fx.mp3" id="32_ogjll"]
-[ext_resource type="Texture2D" uid="uid://br2m7kxpmpvju" path="res://textures/number_9.png" id="33_echv7"]
 
 [sub_resource type="GDScript" id="GDScript_igwrn"]
 resource_name = "prepare_the_orb"
@@ -80,6 +76,24 @@ func _ready():
 	
 	GlobalUIManager.start_camera.current = true
 "
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_vvvm6"]
+exposure_multiplier = 0.65
+dof_blur_far_distance = 5.0
+dof_blur_far_transition = 10.0
+dof_blur_near_enabled = true
+dof_blur_near_distance = 5.0
+dof_blur_amount = 0.15
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_hd7ot"]
+exposure_multiplier = 0.65
+dof_blur_far_enabled = true
+dof_blur_far_distance = 1.0
+dof_blur_far_transition = 10.0
+dof_blur_near_enabled = true
+dof_blur_near_distance = 5.0
+dof_blur_near_transition = 5.0
+dof_blur_amount = 0.15
 
 [sub_resource type="GDScript" id="GDScript_t1npm"]
 resource_name = "ui_setup"
@@ -312,6 +326,7 @@ camera_distance = 7.0
 
 [node name="DynamicCamera" type="Camera3D" parent="the_orb/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
+current = true
 
 [node name="GyroscopeManager" type="Node3D" parent="the_orb"]
 script = ExtResource("3_paq3b")
@@ -327,7 +342,7 @@ wait_time = 0.1
 [node name="XRotate" type="Node3D" parent="the_orb/GyroscopeManager/XTranslate"]
 
 [node name="XMesh" type="MeshInstance3D" parent="the_orb/GyroscopeManager/XTranslate/XRotate"]
-mesh = ExtResource("4_wkjqv")
+mesh = ExtResource("4_tlfq2")
 skeleton = NodePath("../..")
 
 [node name="YTranslate" type="Node3D" parent="the_orb/GyroscopeManager"]
@@ -335,7 +350,7 @@ skeleton = NodePath("../..")
 [node name="YRotate" type="Node3D" parent="the_orb/GyroscopeManager/YTranslate"]
 
 [node name="YMesh" type="MeshInstance3D" parent="the_orb/GyroscopeManager/YTranslate/YRotate"]
-mesh = ExtResource("6_6cp1d")
+mesh = ExtResource("4_tlfq2")
 skeleton = NodePath("../../../XTranslate")
 
 [node name="ZTranslate" type="Node3D" parent="the_orb/GyroscopeManager"]
@@ -343,7 +358,7 @@ skeleton = NodePath("../../../XTranslate")
 [node name="ZRotate" type="Node3D" parent="the_orb/GyroscopeManager/ZTranslate"]
 
 [node name="ZMesh" type="MeshInstance3D" parent="the_orb/GyroscopeManager/ZTranslate/ZRotate"]
-mesh = ExtResource("7_t8n3l")
+mesh = ExtResource("4_tlfq2")
 skeleton = NodePath("../../../XTranslate")
 
 [node name="lighting" type="Node3D" parent="."]
@@ -418,7 +433,7 @@ script = SubResource("GDScript_ihwbo")
 transform = Transform3D(0.986856, 0.107293, -0.120847, 0, 0.747798, 0.663926, 0.161604, -0.655199, 0.737969, 1.52359, 0.0519357, 0.938667)
 
 [node name="start_camera" type="Camera3D" parent="cameras"]
-transform = Transform3D(-4.24722e-08, -0.236414, -0.971652, -1.0334e-08, 0.971652, -0.236414, 1, 5.32907e-15, -4.37113e-08, 6.32962, 0.563452, 2.09713)
+transform = Transform3D(-4.24722e-08, -0.236414, -0.971652, -1.0334e-08, 0.971652, -0.236414, 1, 2.84217e-14, -4.37113e-08, 6.32962, 0.563452, 2.09713)
 current = true
 
 [node name="credits_camera" type="Camera3D" parent="cameras"]
@@ -427,6 +442,16 @@ current = true
 
 [node name="moving_camera" type="Camera3D" parent="cameras"]
 transform = Transform3D(-0.802934, 0.353001, -0.480298, -9.69494e-05, 0.805701, 0.592323, 0.596067, 0.475643, -0.646891, 5.01887, 0.390673, 2.74539)
+current = true
+
+[node name="photo_camera" type="Camera3D" parent="cameras"]
+transform = Transform3D(0.643122, 0.21377, 0.735321, 1.77636e-15, 0.960245, -0.279159, -0.765764, 0.179533, 0.617555, 5.7488, -1.50362, 4.87558)
+attributes = SubResource("CameraAttributesPractical_vvvm6")
+current = true
+
+[node name="photo_camera_2" type="Camera3D" parent="cameras"]
+transform = Transform3D(0.954979, 0.19056, -0.227383, -9.66382e-09, 0.766437, 0.64232, 0.296675, -0.613401, 0.731931, -2.79453, 2.71224, 2.13435)
+attributes = SubResource("CameraAttributesPractical_hd7ot")
 current = true
 
 [node name="UI Layer" type="CanvasLayer" parent="."]
@@ -539,16 +564,6 @@ level_index = 5
 transform = Transform3D(-0.041631, 0, -0.200728, 0, 0.205, 0, 0.200728, 0, -0.041631, 1.4011, -0.555329, 0.523173)
 texture = ExtResource("31_h8lp7")
 level_index = 6
-
-[node name="level_8" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
-transform = Transform3D(-0.0108075, 0, -0.204715, 0, 0.205, 0, 0.204715, 0, -0.0108075, 1.74713, -0.548007, 0.532791)
-texture = ExtResource("32_hjcop")
-level_index = 7
-
-[node name="level_9" parent="background/level_folders" instance=ExtResource("24_0ns3b")]
-transform = Transform3D(0.0148827, 0.00867745, -0.204275, -0.000630538, 0.204816, 0.00865451, 0.204458, 0, 0.0148961, 2.10946, -0.547293, 0.570782)
-texture = ExtResource("33_echv7")
-level_index = 8
 
 [node name="CreditsCanvas" parent="background" instance=ExtResource("29_82ttp")]
 transform = Transform3D(-5, 0, 7.54979e-07, 0, 5, 0, -7.54979e-07, 0, -5, 2.28801, 1.13355, 5.56552)
