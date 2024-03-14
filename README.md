@@ -4,7 +4,7 @@ After the previous intern seriously messed up the telescope, it is now your job 
 Align the projections so they look right, and maybe get that internship extended!
 
 ## A submission for the Acerola Jam 0
-This game was made for the Acerola Game Jam 0 with the theme "Aberration", between February 28th 2024 and March 14th 2024. For the source and credits, check out the git-repo, or view the credits in-game!
+This game was made for the Acerola Game Jam 0 with the theme "Aberration", between February 28th 2024 and March 14th 2024. For the source and credits, check out the "credits_and_attributions.txt" file, or view the credits in-game!
 
 Since this is a jam-game, so the code base is a definitive mess, please keep that in mind!
 
